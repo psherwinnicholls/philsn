@@ -1,12 +1,14 @@
 module.exports = {
   siteMetadata: {
-    title: `philsn`,
-    siteUrl: `https://www.yourdomain.tld`
+    title: `Phil Sherwin-Nicholls`,
+    description: `Service designer, digital technologist & mentor`,
+    author: `@phils_n`,
+    siteUrl: `https://philsn.co.uk`
   },
   plugins: ["gatsby-plugin-image", "gatsby-plugin-react-helmet", "gatsby-plugin-sitemap", {
     resolve: 'gatsby-plugin-manifest',
     options: {
-      "icon": "src/images/icon.png"
+      "icon": "src/images/logo.svg"
     }
   }, "gatsby-plugin-mdx", "gatsby-plugin-sharp", "gatsby-transformer-sharp", {
     resolve: 'gatsby-source-filesystem',
