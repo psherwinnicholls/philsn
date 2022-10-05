@@ -8,7 +8,7 @@
     -webkit-font-smoothing: antialiased;
   }
 
-a{
+a {
   color: "#0f68c4";
   text-decoration-skip: "objects";
   transition: background .5s ease;
@@ -19,4 +19,18 @@ a{
 
 a:hover{
   background-color: rgba(0,0,255,.1);
+}
+
+/* Media queries */
+main {
+  font-size: 36px;
+  max-width: 720px;
+  padding: 2em;
+}
+
+@media only screen and (max-width: 600px) {
+  main {
+    font-size: 24px;
+    padding: 1em;
+  }
 }

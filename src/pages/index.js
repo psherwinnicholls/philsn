@@ -2,10 +2,7 @@ import * as React from "react"
 
 const pageStyles = {
   color: "#232129",
-  padding: 96,
   fontFamily: "Clash Display Variable, -apple-system, Roboto, sans-serif, serif",
-  fontSize: "36px",
-  maxWidth: "640px",
   letterSpacing: ".5px",
   lineHeight: "1.25em",
   fontWeight: 500,

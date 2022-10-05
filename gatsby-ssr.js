@@ -4,9 +4,9 @@ export const onRenderBody = ({ setHeadComponents }) => {
   setHeadComponents([
     <link
       rel="preload"
-      href="./static/fonts/ClashDisplay-Variable.ttf"
+      href="./fonts/ClashDisplay-Variable.ttf"
       as="font"
-      type="font/truetype"
+      type="font/ttf"
       crossOrigin="anonymous"
       key="ClashDisplay-Variable"
     />,
