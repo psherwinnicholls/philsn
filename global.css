@@ -1,0 +1,22 @@
+@font-face {
+    font-family: 'Clash Display Variable';
+    font-weight: 100 900;
+    font-display: swap;
+    font-style: normal;
+    font-named-instance: 'Regular';
+    src: url(/fonts/ClashDisplay-Variable.ttf) format("truetype");
+    -webkit-font-smoothing: antialiased;
+  }
+
+a{
+  color: "#0f68c4";
+  text-decoration-skip: "objects";
+  transition: background .5s ease;
+  padding: 3px 4px;
+  margin: -3px -4px;
+  border-radius: 3px;
+}
+
+a:hover{
+  background-color: rgba(0,0,255,.1);
+}

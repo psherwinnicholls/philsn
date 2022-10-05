@@ -3,170 +3,151 @@ import * as React from "react"
 const pageStyles = {
   color: "#232129",
   padding: 96,
-  fontFamily: "-apple-system, Roboto, sans-serif, serif",
+  fontFamily: "Clash Display Variable, -apple-system, Roboto, sans-serif, serif",
+  fontSize: "36px",
+  maxWidth: "640px",
+  letterSpacing: ".5px",
+  lineHeight: "1.25em",
+  fontWeight: 500,
+  margin: "0 auto",
 }
+
 const headingStyles = {
-  marginTop: 0,
-  marginBottom: 64,
-  maxWidth: 320,
+  marginTop: 0,  
+  marginBottom: 0,
+  fontSize: ".6em",
+  color: "#04cf55",
+  fontWeight: 500,
 }
-const headingAccentStyles = {
-  color: "#663399",
+
+const sectionStyles = {
+  marginBottom: "3.33em",
 }
-const paragraphStyles = {
-  marginBottom: 48,
-}
-const codeStyles = {
-  color: "#8A6534",
-  padding: 4,
-  backgroundColor: "#FFF4DB",
-  fontSize: "1.25rem",
-  borderRadius: 4,
-}
-const listStyles = {
-  marginBottom: 96,
+
+const projectListStyles = {
+  listStyleType: "none",
   paddingLeft: 0,
 }
-const listItemStyles = {
-  fontWeight: 300,
-  fontSize: 24,
-  maxWidth: 560,
-  marginBottom: 30,
-}
-
-const linkStyle = {
-  color: "#8954A8",
-  fontWeight: "bold",
-  fontSize: 16,
-  verticalAlign: "5%",
-}
-
-const docLinkStyle = {
-  ...linkStyle,
-  listStyleType: "none",
-  marginBottom: 24,
-}
-
-const descriptionStyle = {
-  color: "#232129",
-  fontSize: 14,
-  marginTop: 10,
+const projectListItemStyles = {
+  fontWeight: "inherit",
+  fontSize: "inherit",
   marginBottom: 0,
-  lineHeight: 1.25,
 }
 
-const docLink = {
-  text: "Documentation",
-  url: "https://www.gatsbyjs.com/docs/",
-  color: "#8954A8",
+const projectListItemDescription = {
+  color: "#a4adb4",
+  fontSize: ".56em",
+  marginTop: ".4em",
+  lineHeight: "1.2em",
+  fontWeight: "400",
+
+  marginBottom: 0,
 }
 
-const badgeStyle = {
-  color: "#fff",
-  backgroundColor: "#088413",
-  border: "1px solid #088413",
-  fontSize: 11,
-  fontWeight: "bold",
-  letterSpacing: 1,
-  borderRadius: 4,
-  padding: "4px 6px",
-  display: "inline-block",
-  position: "relative",
-  top: -2,
-  marginLeft: 10,
-  lineHeight: 1,
-}
+const jobs = [
+  {
+    client: "DCMS",
+    role: "Helping government make better use of data",
+    description: "Taking a holistic view of the data landscape to enable better knowledge sharing with DCMS's users."
+  },
+  {
+    client: "DCMS",
+    role: "Building the foundations of a digital transformation programme for DCMS",
+    description: "Mapping of DCMS's services and service lines to develop a user-centered roadmap for change.",
+  },
+  {
+    client: "DfE",
+    role: "Coaching and mentoring in organisational service transformation",
+    description: "Upskilling leadership and service teams across government.",
+   },
+   {
+    client: "DfE",
+    role: "Co-designing a service to help people retrain into new careers",
+    description: "Service design lead on the National Retraining Scheme - £100m multichannel service for the DfE with multiple products, integrating careers guidance, online learning and job search.",
+  },
+   {
+    client: "The Planning Inspectorate",
+    role: "Redesigning how people have their say about national infrastructure projects",
+    description: "Designing multiple products, support mechanisms and comms with the Planning Inspectorate to improve efficiency, accessibility and brand trust.",
+  },
+   {
+    client: "Parity Projects",
+    role: "Helping reduce fuel poverty in England",
+    description: "Redesigning a service that helps property owners make thier building's more energy efficient.",
+  },
+  {
+    client: "Florence",
+    role: "Creating a strategy and design system for rapid development of health care services",
+    description: "Working with Florence to enable faster prototyping and more accessible digital services for health care professionals.",
+  },
+  {
+    client: "Cabinet Office",
+    role: "Designing an AI-powered search engine for government",
+    description: "Helping the Cabinet office make sense of the knowledge trapped in billions of documents spread across government.",
+  },
+
+]
 
 const links = [
   {
-    text: "Tutorial",
-    url: "https://www.gatsbyjs.com/docs/tutorial/",
-    description:
-      "A great place to get started if you're new to web development. Designed to guide you through setting up your first Gatsby site.",
-    color: "#E95800",
+    text: "Designing a retraining scheme that meets user needs",
+    url: "https://dfedigital.blog.gov.uk/2018/12/20/designing-a-retraining-scheme-that-meets-user-needs/"
   },
   {
-    text: "How to Guides",
-    url: "https://www.gatsbyjs.com/docs/how-to/",
-    description:
-      "Practical step-by-step guides to help you achieve a specific goal. Most useful when you're trying to get something done.",
-    color: "#1099A8",
+    text: "Are you an easy hacking target? Cybersecurity tips for small business",
+    url: "https://www.theguardian.com/small-business-network/2017/sep/08/are-you-an-easy-hacking-target-cyber-security-tips-for-small-business",
   },
   {
-    text: "Reference Guides",
-    url: "https://www.gatsbyjs.com/docs/reference/",
-    description:
-      "Nitty-gritty technical descriptions of how Gatsby works. Most useful when you need detailed information about Gatsby's APIs.",
-    color: "#BC027F",
+    text: "Education Secretary sets out vision for character and resilience",
+    url: "https://www.gov.uk/government/news/education-secretary-sets-out-vision-for-character-and-resilience",
   },
   {
-    text: "Conceptual Guides",
-    url: "https://www.gatsbyjs.com/docs/conceptual/",
-    description:
-      "Big-picture explanations of higher-level Gatsby concepts. Most useful for building understanding of a particular topic.",
-    color: "#0D96F2",
-  },
-  {
-    text: "Plugin Library",
-    url: "https://www.gatsbyjs.com/plugins",
-    description:
-      "Add functionality and customize your Gatsby site or app with thousands of plugins built by our amazing developer community.",
-    color: "#8EB814",
-  },
-  {
-    text: "Build and Host",
-    url: "https://www.gatsbyjs.com/cloud",
-    badge: true,
-    description:
-      "Now you’re ready to show the world! Give your Gatsby site superpowers: Build and host on Gatsby Cloud. Get started for free!",
-    color: "#663399",
+    text: "Product hunt launch of Hacksy",
+    url: "https://www.producthunt.com/posts/hacksy-by-decoded",
   },
 ]
 
 const IndexPage = () => {
   return (
     <main style={pageStyles}>
-      <h1 style={headingStyles}>
-        Congratulations
-        <br />
-        <span style={headingAccentStyles}>— you just made a Gatsby site! 🎉🎉🎉</span>
-      </h1>
-      <p style={paragraphStyles}>
-        Edit <code style={codeStyles}>src/pages/index.js</code> to see this page
-        update in real-time. 😎
-      </p>
-      <ul style={listStyles}>
-        <li style={docLinkStyle}>
-          <a
-            style={linkStyle}
-            href={`${docLink.url}?utm_source=starter&utm_medium=start-page&utm_campaign=minimal-starter`}
-          >
-            {docLink.text}
-          </a>
-        </li>
-        {links.map(link => (
-          <li key={link.url} style={{ ...listItemStyles, color: link.color }}>
-            <span>
-              <a
-                style={linkStyle}
-                href={`${link.url}?utm_source=starter&utm_medium=start-page&utm_campaign=minimal-starter`}
-              >
-                {link.text}
-              </a>
-              {link.badge && (
-                <span style={badgeStyle} aria-label="New Badge">
-                  NEW!
-                </span>
-              )}
-              <p style={descriptionStyle}>{link.description}</p>
-            </span>
-          </li>
-        ))}
-      </ul>
-      <img
-        alt="Gatsby G Logo"
-        src="data:image/svg+xml,%3Csvg width='24' height='24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2a10 10 0 110 20 10 10 0 010-20zm0 2c-3.73 0-6.86 2.55-7.75 6L14 19.75c3.45-.89 6-4.02 6-7.75h-5.25v1.5h3.45a6.37 6.37 0 01-3.89 4.44L6.06 9.69C7 7.31 9.3 5.63 12 5.63c2.13 0 4 1.04 5.18 2.65l1.23-1.06A7.959 7.959 0 0012 4zm-8 8a8 8 0 008 8c.04 0 .09 0-8-8z' fill='%23639'/%3E%3C/svg%3E"
-      />
+      <section style={sectionStyles}>
+        <h1 style={headingStyles}>Phil Sherwin-Nicholls</h1>
+        <p>
+          A service designer, digital technologist and mentor. 
+        </p>
+        <p>
+        Working at the intersection of technology, data and design &mdash; I help governments, businesses and charities solve wicked, population scale problems.        </p>
+        <p>
+          Get in touch via <a target="_blank" rel="noopener noreferrer" href="mailto:hey@philsn.co.uk">e-mail</a>,{" "}<a target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/in/philsn/">LinkedIn</a>{" "}or{" "}<a target="_blank" rel="noopener noreferrer" href="mailto:hey@philsn.co.uk">Twitter</a>.
+        </p>
+      </section>
+      <section style={sectionStyles}>
+        <h2 style={headingStyles}>A few projects I've worked on:</h2>
+        <ul style={projectListStyles}>
+          {jobs.map((experience,i) => (
+            <li key={i}>
+              <span>
+                  <h3 style={projectListItemStyles}>{experience.role}</h3>
+                  <p style={projectListItemDescription}>{experience.description}</p>
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+      <section style={sectionStyles}>
+        <h2 style={headingStyles}>I've been featured in:</h2>
+        <ul style={projectListStyles}>
+          {links.map((link,i) => (
+            <li key={i}>
+              <p>
+                <a href={link.url}>
+                  {link.text}
+                </a>
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
     </main>
   )
 }
