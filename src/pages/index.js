@@ -13,7 +13,7 @@ const headingStyles = {
   marginTop: 0,  
   marginBottom: 0,
   fontSize: ".6em",
-  color: "#04cf55",
+  color: "#b85600",
   fontWeight: 500,
 }
 
@@ -32,7 +32,7 @@ const projectListItemStyles = {
 }
 
 const projectListItemDescription = {
-  color: "#a4adb4",
+  color: "#757575",
   fontSize: ".56em",
   marginTop: ".4em",
   lineHeight: "1.2em",
