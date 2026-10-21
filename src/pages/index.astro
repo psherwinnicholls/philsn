@@ -47,109 +47,286 @@ const jobs = [
 const links = [
   {
     text: "Designing a retraining scheme that meets user needs",
+    source: "DfE Digital blog",
     url: "https://dfedigital.blog.gov.uk/2018/12/20/designing-a-retraining-scheme-that-meets-user-needs/",
   },
   {
     text: "Are you an easy hacking target? Cybersecurity tips for small business",
+    source: "The Guardian",
     url: "https://www.theguardian.com/small-business-network/2017/sep/08/are-you-an-easy-hacking-target-cyber-security-tips-for-small-business",
   },
   {
     text: "Education Secretary sets out vision for character and resilience",
+    source: "GOV.UK",
     url: "https://www.gov.uk/government/news/education-secretary-sets-out-vision-for-character-and-resilience",
   },
   {
-    text: "Product hunt launch of Hacksy",
+    text: "Product Hunt launch of Hacksy",
+    source: "Product Hunt",
     url: "https://www.producthunt.com/posts/hacksy-by-decoded",
   },
 ]
+
+const pad = (n: number) => String(n).padStart(2, "0")
 ---
 
 <Layout>
   <main>
-    <section>
-      <h1>Phil Sherwin-Nicholls</h1>
-      <p>A service designer, digital technologist and mentor.</p>
-      <p>
-        Working at the intersection of technology, data and design &mdash; I help governments, businesses and charities solve wicked, population scale problems.
-      </p>
-      <p>
-        Get in touch via <a target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/in/philsn/">LinkedIn</a>.
-      </p>
+    <header class="masthead">
+      <p class="label">Design / Technology / Data / Mentoring</p>
+      <h1 class="name">
+        <span>Phil</span>
+        <span>Sherwin-</span>
+        <span>Nicholls</span>
+      </h1>
+    </header>
+
+    <section class="block" aria-labelledby="about">
+      <h2 class="label" id="about">00 / About</h2>
+      <div>
+        <p class="lead">A service designer, digital technologist and mentor.</p>
+        <p class="lead">
+          Working at the intersection of technology, data and design &mdash; I help governments, businesses and charities solve wicked, population scale problems.
+        </p>
+        <p class="contact">
+          Get in touch via <a target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/in/philsn/">LinkedIn&nbsp;↗</a>
+        </p>
+      </div>
     </section>
-    <section>
-      <h2>A few projects I've worked on:</h2>
-      <ul>
-        {jobs.map((job) => (
-          <li>
-            <h3>{job.role}</h3>
-            <p class="description">{job.description}</p>
+
+    <section class="block" aria-labelledby="work">
+      <h2 class="label" id="work">01 / Selected work</h2>
+      <ol class="rows">
+        {jobs.map((job, i) => (
+          <li class="row job">
+            <span class="label num">{pad(i + 1)}</span>
+            <h3 class="title">{job.role}</h3>
+            <p class="desc">
+              <span class="label client">{job.client}</span>
+              {job.description}
+            </p>
           </li>
         ))}
-      </ul>
+      </ol>
     </section>
-    <section>
-      <h2>I've been featured in:</h2>
-      <ul>
-        {links.map((link) => (
-          <li>
-            <p><a href={link.url}>{link.text}</a></p>
+
+    <section class="block" aria-labelledby="featured">
+      <h2 class="label" id="featured">02 / Featured in</h2>
+      <ol class="rows">
+        {links.map((link, i) => (
+          <li class="row">
+            <a class="feature" href={link.url}>
+              <span class="label num">{pad(i + 1)}</span>
+              <span class="title">{link.text}</span>
+              <span class="label source">{link.source}&nbsp;↗</span>
+            </a>
           </li>
         ))}
-      </ul>
+      </ol>
     </section>
+
+    <footer class="block footer">
+      <p class="label">Phil Sherwin-Nicholls</p>
+      <p class="label"><a href="#top">Back to top&nbsp;↑</a></p>
+    </footer>
   </main>
 </Layout>
 
 <style>
   main {
-    color: #232129;
-    font-family: "Clash Display Variable", -apple-system, Roboto, sans-serif, serif;
-    letter-spacing: 0.5px;
-    line-height: 1.25em;
-    font-weight: 500;
+    max-width: 82rem;
     margin: 0 auto;
-    font-size: 36px;
-    max-width: 720px;
-    padding: 2em;
+    padding: var(--gutter);
   }
 
-  section {
-    margin-bottom: 3.33em;
+  /* Masthead */
+
+  .masthead {
+    border-top: var(--rule);
+    padding-top: 0.75rem;
+    margin-bottom: clamp(3rem, 2rem + 5vw, 6rem);
+    container-type: inline-size;
+    overflow-x: clip;
   }
 
-  h1,
-  h2 {
-    margin-top: 0;
-    margin-bottom: 0;
-    font-size: 0.6em;
-    color: #b85600;
-    font-weight: 500;
+  .name {
+    margin: clamp(1.5rem, 1rem + 3vw, 3.5rem) 0 0;
+    font-family: var(--display);
+    /* "Sherwin-" is ~5em wide in Clash Display, so this fills the column */
+    font-size: 19cqi;
+    font-weight: 600;
+    line-height: 0.86;
+    letter-spacing: -0.025em;
+    text-transform: uppercase;
   }
 
-  ul {
-    list-style-type: none;
-    padding-left: 0;
+  .name span {
+    display: block;
   }
 
-  h3 {
-    font-weight: inherit;
-    font-size: inherit;
-    margin-bottom: 0;
+  /* Sections */
+
+  .block {
+    border-top: var(--rule);
+    padding-top: 0.75rem;
+    margin-bottom: clamp(3.5rem, 2.5rem + 4vw, 6rem);
+    display: grid;
+    gap: 1.5rem;
   }
 
-  .description {
-    color: #757575;
-    font-size: 0.56em;
-    margin-top: 0.4em;
-    line-height: 1.2em;
-    font-weight: 400;
-    margin-bottom: 0;
-  }
-
-  @media only screen and (max-width: 600px) {
-    main {
-      font-size: 24px;
-      padding: 1em;
+  @media (min-width: 56rem) {
+    .block {
+      grid-template-columns: 1fr 3fr;
+      gap: var(--gutter);
     }
+  }
+
+  .lead {
+    font-family: var(--display);
+    font-size: var(--step-2);
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    max-width: 30ch;
+    margin: 0 0 0.6em;
+    text-wrap: pretty;
+  }
+
+  .contact {
+    margin: 2rem 0 0;
+    font-size: var(--step-0);
+  }
+
+  .contact a {
+    font-family: var(--display);
+    font-size: var(--step-1);
+    font-weight: 600;
+  }
+
+  /* Numbered rows */
+
+  .rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .row {
+    border-bottom: var(--hairline);
+  }
+
+  .row:first-child {
+    border-top: var(--hairline);
+  }
+
+  @media (min-width: 56rem) {
+    .row:first-child {
+      border-top: none;
+    }
+  }
+
+  .job,
+  .feature {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    column-gap: 0.5rem;
+    padding: 1.25rem 0;
+  }
+
+  .num {
+    padding-top: 0.35em;
+  }
+
+  .title {
+    margin: 0;
+    font-family: var(--display);
+    font-size: var(--step-1);
+    font-weight: 500;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+
+  .desc {
+    grid-column: 2;
+    margin: 0.6rem 0 0;
+    color: var(--muted);
+    max-width: 60ch;
+    text-wrap: pretty;
+  }
+
+  .client {
+    display: block;
+    color: var(--ink);
+    margin-bottom: 0.25rem;
+  }
+
+  @media (min-width: 72rem) {
+    .job {
+      grid-template-columns: 2.5rem 1.15fr 1fr;
+      column-gap: 1.5rem;
+    }
+
+    .desc {
+      grid-column: 3;
+      margin-top: 0.2rem;
+    }
+  }
+
+  /* Featured links: whole row is the link and inverts on hover */
+
+  .feature {
+    text-decoration: none;
+    padding-left: 0;
+    padding-right: 0;
+    transition: padding 0.15s ease-out;
+  }
+
+  .feature .title {
+    text-decoration-line: underline;
+    text-decoration-thickness: 0.06em;
+    text-underline-offset: 0.16em;
+  }
+
+  .source {
+    grid-column: 2;
+    margin-top: 0.6rem;
+    color: var(--muted);
+  }
+
+  .feature:hover {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .feature:hover .source {
+    color: inherit;
+  }
+
+  @media (min-width: 72rem) {
+    .feature {
+      grid-template-columns: 2.5rem 1fr auto;
+      column-gap: 1.5rem;
+      align-items: baseline;
+    }
+
+    .source {
+      grid-column: 3;
+      margin-top: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .feature {
+      transition: none;
+    }
+  }
+
+  /* Footer */
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0;
   }
 </style>

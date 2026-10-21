@@ -2,32 +2,41 @@
 import Layout from "../layouts/Layout.astro"
 ---
 
-<Layout title="Not found">
+<Layout title="Not found — Phil Sherwin-Nicholls">
   <main>
-    <h1>Page not found</h1>
-    <p>
-      Sorry 😔, we couldn’t find what you were looking for.
-      <br />
-      <br />
-      <a href="/">Go home</a>.
-    </p>
+    <p class="label">Error 404</p>
+    <h1>Not found</h1>
+    <p>Sorry, there’s nothing at this address.</p>
+    <p><a href="/">Go home&nbsp;→</a></p>
   </main>
 </Layout>
 
 <style>
   main {
-    color: #232129;
-    padding: 96px;
-    font-family: -apple-system, Roboto, sans-serif, serif;
+    max-width: 82rem;
+    margin: 0 auto;
+    padding: var(--gutter);
+  }
+
+  .label {
+    border-top: var(--rule);
+    padding-top: 0.75rem;
   }
 
   h1 {
-    margin-top: 0;
-    margin-bottom: 64px;
-    max-width: 320px;
+    margin: clamp(1.5rem, 1rem + 3vw, 3.5rem) 0 2rem;
+    font-family: var(--display);
+    font-size: var(--step-display);
+    font-weight: 600;
+    line-height: 0.86;
+    letter-spacing: -0.025em;
+    text-transform: uppercase;
   }
 
-  p {
-    margin-bottom: 48px;
+  p:not(.label) {
+    font-family: var(--display);
+    font-size: var(--step-1);
+    font-weight: 500;
+    margin: 0 0 0.5em;
   }
 </style>

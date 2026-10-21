@@ -6,13 +6,87 @@
   src: url(/fonts/ClashDisplay-Variable.ttf) format("truetype");
 }
 
+:root {
+  --ink: #0b0b0b;
+  --paper: #f4f3ef;
+  --muted: #5c5c58;
+  --accent: #ff4d00;
+
+  --display: "Clash Display Variable", -apple-system, Roboto, sans-serif;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+  /* Fluid type scale: 390px → 1280px viewport */
+  --step--1: clamp(0.75rem, 0.72rem + 0.12vw, 0.8125rem);
+  --step-0: clamp(0.875rem, 0.84rem + 0.15vw, 0.9375rem);
+  --step-1: clamp(1.25rem, 1.08rem + 0.7vw, 1.625rem);
+  --step-2: clamp(1.625rem, 1.25rem + 1.55vw, 2.5rem);
+  --step-display: clamp(3.25rem, 0.9rem + 11.2vw, 9.5rem);
+
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 3rem);
+  --rule: 3px solid var(--ink);
+  --hairline: 1px solid var(--ink);
+
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #f4f3ef;
+    --paper: #0b0b0b;
+    --muted: #a3a39d;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: var(--step-0);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent);
+  color: #0b0b0b;
+}
+
 a {
-  transition: background 0.5s ease;
-  padding: 3px 4px;
-  margin: -3px -4px;
-  border-radius: 3px;
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-thickness: 0.09em;
+  text-underline-offset: 0.16em;
 }
 
 a:hover {
-  background-color: rgba(0, 0, 255, 0.1);
+  background: var(--ink);
+  color: var(--paper);
+  text-decoration-color: transparent;
+}
+
+a:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.label {
+  font-family: var(--mono);
+  font-size: var(--step--1);
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  margin: 0;
 }
