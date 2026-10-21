@@ -78,6 +78,12 @@ const links = [
 ]
 
 const pad = (n: number) => String(n).padStart(2, "0")
+
+// Masthead name split into letters; --i staggers the intro animation
+let letterIndex = 0
+const nameLines = ["Phil", "Sherwin-", "Nicholls"].map((line) =>
+  [...line].map((char) => ({ char, i: letterIndex++ })),
+)
 ---
 
 <Layout>
@@ -85,9 +91,18 @@ const pad = (n: number) => String(n).padStart(2, "0")
     <header class="masthead">
       <p class="label">Design / Technology / Data / Mentoring</p>
       <h1 class="name">
-        <span>Phil</span>
-        <span>Sherwin-</span>
-        <span>Nicholls</span>
+        <span class="visually-hidden">Phil Sherwin-Nicholls</span>
+        <span aria-hidden="true">
+          {nameLines.map((letters) => (
+            <span class="line">
+              {letters.map(({ char, i }) => (
+                <span class="letter" style={`--i: ${i}`} data-char={char}>
+                  <span class="glyph">{char}</span>
+                </span>
+              ))}
+            </span>
+          ))}
+        </span>
       </h1>
     </header>
 
@@ -157,6 +172,7 @@ const pad = (n: number) => String(n).padStart(2, "0")
     margin-bottom: clamp(3rem, 2rem + 5vw, 6rem);
     container-type: inline-size;
     overflow-x: clip;
+    view-timeline: --masthead block;
   }
 
   .name {
@@ -170,8 +186,87 @@ const pad = (n: number) => String(n).padStart(2, "0")
     text-transform: uppercase;
   }
 
-  .name span {
+  .line {
     display: block;
+  }
+
+  /* Each letter reserves its bold width (::before, invisible) so weight
+     changes don't reflow the line or shift letters under the pointer */
+  .letter {
+    display: inline-grid;
+    justify-items: center;
+  }
+
+  .letter::before {
+    content: attr(data-char);
+    grid-area: 1 / 1;
+    font-weight: 600;
+    visibility: hidden;
+  }
+
+  .glyph {
+    grid-area: 1 / 1;
+  }
+
+  /* Clash Display's weight axis runs 200–700; the name rests at 600 */
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* Intro: each letter swells from hairline to bold, left to right */
+    .glyph {
+      animation: weight-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+      animation-delay: calc(var(--i) * 45ms + 150ms);
+    }
+
+    /* Hover: the letter under the pointer thins, its neighbours partly */
+    @media (hover: hover) and (pointer: fine) {
+      .glyph {
+        transition: font-weight 0.35s ease-out;
+      }
+
+      .letter:has(+ .letter:hover) .glyph,
+      .letter:hover + .letter .glyph {
+        font-weight: 400;
+      }
+
+      .letter:hover .glyph {
+        font-weight: 200;
+      }
+    }
+
+    /* Scroll: lines drift apart and thin out as the masthead leaves */
+    @supports (animation-timeline: view()) {
+      .line {
+        animation: drift linear both;
+      }
+
+      /* Separate rule: the minifier would otherwise fold the timeline into
+         the animation shorthand, which browsers reject */
+      .masthead .line {
+        animation-timeline: --masthead;
+        animation-range: exit 0% exit 70%;
+      }
+
+      .line:nth-child(odd) {
+        --drift: 14%;
+      }
+
+      .line:nth-child(even) {
+        --drift: -14%;
+      }
+    }
+  }
+
+  @keyframes weight-in {
+    from {
+      font-weight: 200;
+    }
+  }
+
+  @keyframes drift {
+    to {
+      font-weight: 200;
+      transform: translateX(var(--drift));
+    }
   }
 
   /* Sections */
