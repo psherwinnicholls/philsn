@@ -21,8 +21,9 @@ npm run preview  # serve the built site
 - `src/styles/global.css` — font face and link styles
 - `public/` — files served as-is (font, favicons)
 
-## Deploying (Cloudflare Pages)
+## Deploying
 
-- Build command: `npm run build`
-- Build output directory: `dist`
-- Node version comes from `.nvmrc`
+Hosted on GitHub Pages, with DNS for philsn.co.uk on Cloudflare. Every push
+to `main` builds the site and deploys it via `.github/workflows/deploy.yml`
+(Settings → Pages → Source must be "GitHub Actions"). Pull requests run the
+build only, as a check.
