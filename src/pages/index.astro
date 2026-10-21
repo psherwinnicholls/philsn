@@ -3,34 +3,44 @@ import Layout from "../layouts/Layout.astro"
 
 const jobs = [
   {
+    client: "Public sector",
+    role: "Improving the data foundations of five organisations to unlock a potential £2bn market",
+    description: "Leading a team of seven to unpick the legal and cultural barriers to data sharing, and prototyping tools for compliance and a single customer view.",
+  },
+  {
+    client: "DEFRA",
+    role: "Setting up a Policy Design Lab for DEFRA's £2.25b farming programme",
+    description: "Designing the vision, operating model and business case for a lab that has green-lit 12 policies and disproven two, saving an estimated £40m.",
+  },
+  {
+    client: "frog",
+    role: "Creating a bootcamp to grow user-centred design capability",
+    description: "Writing the business case, operating model and 25 hours of content for a bootcamp that’s now part of a global training offer.",
+  },
+  {
+    client: "Ministry of Justice",
+    role: "Helping eight organisations move off a legacy system",
+    description: "Shaping the strategy, operating model and ways of working for eight organisations, with a roadmap to end their reliance on a legacy system.",
+  },
+  {
     client: "DCMS",
     role: "Helping government make better use of data",
-    description: "Taking a holistic view of the data landscape to enable better knowledge sharing with DCMS's users.",
+    description: "Taking a holistic view of DCMS's data landscape to enable better knowledge sharing with the department's users.",
   },
   {
     client: "DCMS",
     role: "Building the foundations of a digital transformation programme for DCMS",
-    description: "Mapping of DCMS's services and service lines to develop a user-centered roadmap for change.",
-  },
-  {
-    client: "DfE",
-    role: "Coaching and mentoring in organisational service transformation",
-    description: "Upskilling leadership and service teams across government.",
+    description: "Mapping DCMS's services and service lines to develop a user-centred roadmap for change across the department.",
   },
   {
     client: "DfE",
     role: "Co-designing a service to help people retrain into new careers",
-    description: "Service design lead on the National Retraining Scheme - £100m multichannel service for the DfE with multiple products, integrating careers guidance, online learning and job search.",
-  },
-  {
-    client: "The Planning Inspectorate",
-    role: "Redesigning how people have their say about national infrastructure projects",
-    description: "Designing multiple products, support mechanisms and comms with the Planning Inspectorate to improve efficiency, accessibility and brand trust.",
+    description: "Leading service design on the £100m National Retraining Scheme, bringing careers guidance, online learning and job search into one service.",
   },
   {
     client: "Parity Projects",
     role: "Helping reduce fuel poverty in England",
-    description: "Redesigning a service that helps property owners make their buildings more energy efficient.",
+    description: "Redesigning a service that helps property owners make their buildings more energy efficient, with Parity Projects.",
   },
   {
     client: "Florence",
@@ -40,7 +50,7 @@ const jobs = [
   {
     client: "Cabinet Office",
     role: "Designing an AI-powered search engine for government",
-    description: "Helping the Cabinet office make sense of the knowledge trapped in billions of documents spread across government.",
+    description: "Helping the Cabinet Office make sense of the knowledge trapped in billions of documents spread across government.",
   },
 ]
 
@@ -68,6 +78,12 @@ const links = [
 ]
 
 const pad = (n: number) => String(n).padStart(2, "0")
+
+// Masthead name split into letters; --i staggers the intro animation
+let letterIndex = 0
+const nameLines = ["Phil", "Sherwin-", "Nicholls"].map((line) =>
+  [...line].map((char) => ({ char, i: letterIndex++ })),
+)
 ---
 
 <Layout>
@@ -75,9 +91,18 @@ const pad = (n: number) => String(n).padStart(2, "0")
     <header class="masthead">
       <p class="label">Design / Technology / Data / Mentoring</p>
       <h1 class="name">
-        <span>Phil</span>
-        <span>Sherwin-</span>
-        <span>Nicholls</span>
+        <span class="visually-hidden">Phil Sherwin-Nicholls</span>
+        <span aria-hidden="true">
+          {nameLines.map((letters) => (
+            <span class="line">
+              {letters.map(({ char, i }) => (
+                <span class="letter" style={`--i: ${i}`} data-char={char}>
+                  <span class="glyph">{char}</span>
+                </span>
+              ))}
+            </span>
+          ))}
+        </span>
       </h1>
     </header>
 
@@ -102,7 +127,7 @@ const pad = (n: number) => String(n).padStart(2, "0")
             <span class="label num">{pad(i + 1)}</span>
             <h3 class="title">{job.role}</h3>
             <p class="desc">
-              <span class="label client">{job.client}</span>
+              {job.client && <span class="label client">{job.client}</span>}
               {job.description}
             </p>
           </li>
@@ -147,6 +172,7 @@ const pad = (n: number) => String(n).padStart(2, "0")
     margin-bottom: clamp(3rem, 2rem + 5vw, 6rem);
     container-type: inline-size;
     overflow-x: clip;
+    view-timeline: --masthead block;
   }
 
   .name {
@@ -158,10 +184,96 @@ const pad = (n: number) => String(n).padStart(2, "0")
     line-height: 0.86;
     letter-spacing: -0.025em;
     text-transform: uppercase;
+
+    /* Animation tuning */
+    --wave-step: 45ms;
+    --wave-duration: 0.9s;
+    --drift-distance: 14%;
+    --hover-weight: 200;
+    --neighbour-weight: 400;
   }
 
-  .name span {
+  .line {
     display: block;
+  }
+
+  /* Each letter reserves its bold width (::before, invisible) so weight
+     changes don't reflow the line or shift letters under the pointer */
+  .letter {
+    display: inline-grid;
+    justify-items: center;
+  }
+
+  .letter::before {
+    content: attr(data-char);
+    grid-area: 1 / 1;
+    font-weight: 600;
+    visibility: hidden;
+  }
+
+  .glyph {
+    grid-area: 1 / 1;
+  }
+
+  /* Clash Display's weight axis runs 200–700; the name rests at 600 */
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* Intro: each letter swells from hairline to bold, left to right */
+    .glyph {
+      animation: weight-in var(--wave-duration) cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+      animation-delay: calc(var(--i) * var(--wave-step) + 150ms);
+    }
+
+    /* Hover: the letter under the pointer thins, its neighbours partly */
+    @media (hover: hover) and (pointer: fine) {
+      .glyph {
+        transition: font-weight 0.35s ease-out;
+      }
+
+      .letter:has(+ .letter:hover) .glyph,
+      .letter:hover + .letter .glyph {
+        font-weight: var(--neighbour-weight);
+      }
+
+      .letter:hover .glyph {
+        font-weight: var(--hover-weight);
+      }
+    }
+
+    /* Scroll: lines drift apart and thin out as the masthead leaves */
+    @supports (animation-timeline: view()) {
+      .line {
+        animation: drift linear both;
+      }
+
+      /* Separate rule: the minifier would otherwise fold the timeline into
+         the animation shorthand, which browsers reject */
+      .masthead .line {
+        animation-timeline: --masthead;
+        animation-range: exit 0% exit 70%;
+      }
+
+      .line:nth-child(odd) {
+        --drift: var(--drift-distance);
+      }
+
+      .line:nth-child(even) {
+        --drift: calc(var(--drift-distance) * -1);
+      }
+    }
+  }
+
+  @keyframes weight-in {
+    from {
+      font-weight: 200;
+    }
+  }
+
+  @keyframes drift {
+    to {
+      font-weight: 200;
+      transform: translateX(var(--drift));
+    }
   }
 
   /* Sections */
@@ -250,7 +362,7 @@ const pad = (n: number) => String(n).padStart(2, "0")
     grid-column: 2;
     margin: 0.6rem 0 0;
     color: var(--muted);
-    max-width: 60ch;
+    max-width: 68ch;
     text-wrap: pretty;
   }
 
@@ -258,18 +370,6 @@ const pad = (n: number) => String(n).padStart(2, "0")
     display: block;
     color: var(--ink);
     margin-bottom: 0.25rem;
-  }
-
-  @media (min-width: 72rem) {
-    .job {
-      grid-template-columns: 2.5rem 1.15fr 1fr;
-      column-gap: 1.5rem;
-    }
-
-    .desc {
-      grid-column: 3;
-      margin-top: 0.2rem;
-    }
   }
 
   /* Featured links: whole row is the link and inverts on hover */
