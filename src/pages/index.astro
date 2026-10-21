@@ -3,6 +3,21 @@ import Layout from "../layouts/Layout.astro"
 
 const jobs = [
   {
+    client: "DEFRA Policy Design Lab",
+    role: "Transformation strategy",
+    description: "Led the design, vision, mission and operating model of a Policy Design Lab with directors of the £2.25b Farming Countryside Programme in DEFRA. The lab exists as a cross-government exemplar of a new way of developing policy. I led the co-design of the lab’s problem statement, ways of working and op-model, then developed the business case to release funding to set up and run the lab. The lab has been a success; green-lit 12 policies and disproven two policies, saving the department an estimated £40m. The work has been nominated for an award.",
+  },
+  {
+    client: "UCD Bootcamp - frog",
+    role: "Proposition & content development",
+    description: "Led and delivered an internal business case aimed at increasing the confidence and capability of user centred designers, aligned to the government’s goal of strengthening its internal digital capability. Designed the operating model for the bootcamp and produced 25h of content which empowers attendees with theory, hands on activities and moments of reflection followed by additional support, mentorship and resources. The bootcamp has exceptional feedback, and is now part of a global training offer.",
+  },
+  {
+    client: "Ministry of Justice",
+    role: "Transformation strategy, op-model & ways of working",
+    description: "Led strategic service design initiatives across eight organisations, resulting in a roadmap to remove their dependencies on a legacy system. This involved collaborating with stakeholders to understand their business requirements, analysing the existing system architecture, and designing a future-proof solution that met their needs. The outcome was improved efficiency, reduced costs, and enhanced user experience for all organisations.",
+  },
+  {
     client: "DCMS",
     role: "Helping government make better use of data",
     description: "Taking a holistic view of the data landscape to enable better knowledge sharing with DCMS's users.",
@@ -250,7 +265,7 @@ const pad = (n: number) => String(n).padStart(2, "0")
     grid-column: 2;
     margin: 0.6rem 0 0;
     color: var(--muted);
-    max-width: 60ch;
+    max-width: 68ch;
     text-wrap: pretty;
   }
 
@@ -258,18 +273,6 @@ const pad = (n: number) => String(n).padStart(2, "0")
     display: block;
     color: var(--ink);
     margin-bottom: 0.25rem;
-  }
-
-  @media (min-width: 72rem) {
-    .job {
-      grid-template-columns: 2.5rem 1.15fr 1fr;
-      column-gap: 1.5rem;
-    }
-
-    .desc {
-      grid-column: 3;
-      margin-top: 0.2rem;
-    }
   }
 
   /* Featured links: whole row is the link and inverts on hover */
