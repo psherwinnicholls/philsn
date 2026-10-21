@@ -9,7 +9,7 @@ const jobs = [
   },
   {
     client: "DEFRA",
-    role: "Setting up a Policy Design Lab for DEFRA's £2.25b farming programme",
+    role: "Setting up a Policy Design Lab for DEFRA’s £2.25b farming programme",
     description: "Designing the vision, operating model and business case for a lab that has green-lit 12 policies and disproven two, saving an estimated £40m.",
   },
   {
@@ -25,12 +25,12 @@ const jobs = [
   {
     client: "DCMS",
     role: "Helping government make better use of data",
-    description: "Taking a holistic view of DCMS's data landscape to enable better knowledge sharing with the department's users.",
+    description: "Taking a holistic view of DCMS’s data landscape to enable better knowledge sharing with the department’s users.",
   },
   {
     client: "DCMS",
     role: "Building the foundations of a digital transformation programme for DCMS",
-    description: "Mapping DCMS's services and service lines to develop a user-centred roadmap for change across the department.",
+    description: "Mapping DCMS’s services and service lines to develop a user-centred roadmap for change across the department.",
   },
   {
     client: "DfE",
@@ -87,78 +87,79 @@ const nameLines = ["Phil", "Sherwin-", "Nicholls"].map((line) =>
 ---
 
 <Layout>
-  <main>
-    <header class="masthead">
-      <p class="label">Design / Technology / Data / Mentoring</p>
-      <h1 class="name">
-        <span class="visually-hidden">Phil Sherwin-Nicholls</span>
-        <span aria-hidden="true">
-          {nameLines.map((letters) => (
-            <span class="line">
-              {letters.map(({ char, i }) => (
-                <span class="letter" style={`--i: ${i}`} data-char={char}>
-                  <span class="glyph">{char}</span>
-                </span>
-              ))}
-            </span>
+  <div class="page">
+    <main>
+      <header class="masthead">
+        <p class="label">Design / Technology / Data / Mentoring</p>
+        <h1 class="name">
+          <span class="visually-hidden">Phil Sherwin-Nicholls</span>
+          <span aria-hidden="true">
+            {nameLines.map((letters) => (
+              <span class="line">
+                {letters.map(({ char, i }) => (
+                  <span class="letter" style={`--i: ${i}`} data-char={char}>
+                    <span class="glyph">{char}</span>
+                  </span>
+                ))}
+              </span>
+            ))}
+          </span>
+        </h1>
+      </header>
+
+      <section class="block" aria-labelledby="about">
+        <h2 class="label" id="about"><span aria-hidden="true">00 / </span>About</h2>
+        <div>
+          <p class="lead">A service designer, digital technologist and mentor.</p>
+          <p class="lead">
+            Working at the intersection of technology, data and design &mdash; I help governments, businesses and charities solve wicked, population scale problems.
+          </p>
+          <p class="contact">
+            Get in touch via <a target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/in/philsn/">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span><span aria-hidden="true">&nbsp;↗</span></a>
+          </p>
+        </div>
+      </section>
+
+      <section class="block" aria-labelledby="work">
+        <h2 class="label" id="work"><span aria-hidden="true">01 / </span>Selected work</h2>
+        <ol class="rows">
+          {jobs.map((job, i) => (
+            <li class="row job">
+              <span class="label num" aria-hidden="true">{pad(i + 1)}</span>
+              <h3 class="title">{job.role}</h3>
+              {job.client && <p class="label client">{job.client}</p>}
+              <p class="desc">{job.description}</p>
+            </li>
           ))}
-        </span>
-      </h1>
-    </header>
+        </ol>
+      </section>
 
-    <section class="block" aria-labelledby="about">
-      <h2 class="label" id="about">00 / About</h2>
-      <div>
-        <p class="lead">A service designer, digital technologist and mentor.</p>
-        <p class="lead">
-          Working at the intersection of technology, data and design &mdash; I help governments, businesses and charities solve wicked, population scale problems.
-        </p>
-        <p class="contact">
-          Get in touch via <a target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/in/philsn/">LinkedIn&nbsp;↗</a>
-        </p>
-      </div>
-    </section>
+      <section class="block" aria-labelledby="featured">
+        <h2 class="label" id="featured"><span aria-hidden="true">02 / </span>Featured in</h2>
+        <ol class="rows">
+          {links.map((link, i) => (
+            <li class="row">
+              <a class="feature" href={link.url}>
+                <span class="label num" aria-hidden="true">{pad(i + 1)}</span>
+                <span class="title">{link.text}</span>
+                <span class="label source">{link.source}<span aria-hidden="true">&nbsp;↗</span></span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </section>
 
-    <section class="block" aria-labelledby="work">
-      <h2 class="label" id="work">01 / Selected work</h2>
-      <ol class="rows">
-        {jobs.map((job, i) => (
-          <li class="row job">
-            <span class="label num">{pad(i + 1)}</span>
-            <h3 class="title">{job.role}</h3>
-            <p class="desc">
-              {job.client && <span class="label client">{job.client}</span>}
-              {job.description}
-            </p>
-          </li>
-        ))}
-      </ol>
-    </section>
-
-    <section class="block" aria-labelledby="featured">
-      <h2 class="label" id="featured">02 / Featured in</h2>
-      <ol class="rows">
-        {links.map((link, i) => (
-          <li class="row">
-            <a class="feature" href={link.url}>
-              <span class="label num">{pad(i + 1)}</span>
-              <span class="title">{link.text}</span>
-              <span class="label source">{link.source}&nbsp;↗</span>
-            </a>
-          </li>
-        ))}
-      </ol>
-    </section>
+    </main>
 
     <footer class="block footer">
       <p class="label">Phil Sherwin-Nicholls</p>
-      <p class="label"><a href="#top">Back to top&nbsp;↑</a></p>
+      <p class="label"><a href="#top">Back to top<span aria-hidden="true">&nbsp;↑</span></a></p>
     </footer>
-  </main>
+  </div>
 </Layout>
 
 <style>
-  main {
+  .page {
     max-width: 82rem;
     margin: 0 auto;
     padding: var(--gutter);
@@ -367,9 +368,12 @@ const nameLines = ["Phil", "Sherwin-", "Nicholls"].map((line) =>
   }
 
   .client {
-    display: block;
-    color: var(--ink);
-    margin-bottom: 0.25rem;
+    grid-column: 2;
+    margin-top: 0.6rem;
+  }
+
+  .client + .desc {
+    margin-top: 0.25rem;
   }
 
   /* Featured links: whole row is the link and inverts on hover */
