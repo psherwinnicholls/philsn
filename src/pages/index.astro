@@ -1,60 +1,86 @@
 ---
 import Layout from "../layouts/Layout.astro"
 
+const experience = [
+  {
+    role: "Head of design",
+    org: "frog",
+    years: "2023 → now",
+    description: "Growing a multidisciplinary team of designers and researchers from 3 to 17, and launching four new products for clients.",
+  },
+  {
+    role: "Independent design lead",
+    org: "",
+    years: "2018 → 2023",
+    description: "Leading products, programmes and strategies with in-house teams for public and private sector clients.",
+  },
+  {
+    role: "Head of UX",
+    org: "Decoded",
+    years: "2015 → 2018",
+    description: "Leading the design of learning products for global clients including GE, TalkTalk, ING, Philips and Veon.",
+  },
+]
+
 const jobs = [
   {
-    client: "Public sector",
+    label: "Product owner · frog",
+    role: "Building an agentic AI tool that cuts policy making from years to hours",
+    description: "Securing investment, proving the idea with prototypes and leading data engineers to an MVP presented to Number 10’s senior policy adviser.",
+  },
+  {
+    label: "Data discovery · Public sector",
     role: "Improving the data foundations of five organisations to unlock a potential £2bn market",
     description: "Leading a team of seven to unpick the legal and cultural barriers to data sharing, and prototyping tools for compliance and a single customer view.",
   },
   {
-    client: "DEFRA",
+    label: "Transformation strategy · DEFRA",
     role: "Setting up a Policy Design Lab for DEFRA’s £2.25b farming programme",
-    description: "Designing the vision, operating model and business case for a lab that has green-lit 12 policies and disproven two, saving an estimated £40m.",
+    description: "Designing the vision, operating model and business case for an award-nominated lab that has green-lit 12 policies and saved an estimated £40m.",
   },
   {
-    client: "frog",
+    label: "Proposition & content · frog",
     role: "Creating a bootcamp to grow user-centred design capability",
     description: "Writing the business case, operating model and 25 hours of content for a bootcamp that’s now part of a global training offer.",
   },
   {
-    client: "Ministry of Justice",
+    label: "Transformation strategy · Ministry of Justice",
     role: "Helping eight organisations move off a legacy system",
     description: "Shaping the strategy, operating model and ways of working for eight organisations, with a roadmap to end their reliance on a legacy system.",
   },
   {
-    client: "DCMS",
-    role: "Helping government make better use of data",
-    description: "Taking a holistic view of DCMS’s data landscape to enable better knowledge sharing with the department’s users.",
+    label: "Transformation strategy · DCMS",
+    role: "Building the foundations of digital transformation at DCMS",
+    description: "Creating service lines and a user-centred roadmap for change, and helping the department make better use of its data.",
   },
   {
-    client: "DCMS",
-    role: "Building the foundations of a digital transformation programme for DCMS",
-    description: "Mapping DCMS’s services and service lines to develop a user-centred roadmap for change across the department.",
-  },
-  {
-    client: "DfE",
-    role: "Co-designing a service to help people retrain into new careers",
-    description: "Leading service design on the £100m National Retraining Scheme, bringing careers guidance, online learning and job search into one service.",
-  },
-  {
-    client: "Parity Projects",
-    role: "Helping reduce fuel poverty in England",
-    description: "Redesigning a service that helps property owners make their buildings more energy efficient, with Parity Projects.",
-  },
-  {
-    client: "Florence",
-    role: "Creating a strategy and design system for rapid development of health care services",
-    description: "Working with Florence to enable faster prototyping and more accessible digital services for health care professionals.",
-  },
-  {
-    client: "Cabinet Office",
+    label: "AI knowledge capture · Cabinet Office",
     role: "Designing an AI-powered search engine for government",
-    description: "Helping the Cabinet Office make sense of the knowledge trapped in billions of documents spread across government.",
+    description: "Using machine learning to help the Cabinet Office make sense of the knowledge trapped in billions of documents across government.",
+  },
+  {
+    label: "Design lead · DfE",
+    role: "Co-designing a service to help people retrain into new careers",
+    description: "Leading design on the £100m National Retraining Scheme, a Number 10 priority bringing careers guidance, online learning and job search together.",
+  },
+  {
+    label: "Design system & product strategy · Florence",
+    role: "Creating a strategy and design system for rapid development of health care services",
+    description: "Working with the CTO and product team to enable faster prototyping and more accessible digital services for health care professionals.",
   },
 ]
 
 const links = [
+  {
+    text: "AI trawls 20,000 miles of state papers",
+    source: "The Times",
+    url: "https://www.thetimes.com/uk/article/ai-trawls-20-000-miles-of-state-papers-j0l9k5gx9",
+  },
+  {
+    text: "Policy Design Lab with DEFRA, award-nominated case study",
+    source: "MCA",
+    url: "https://www.mca.org.uk/consulting-case-studies/capgemini-invent-with-department-for-environment-food-and-rural-affairs",
+  },
   {
     text: "Designing a retraining scheme that meets user needs",
     source: "DfE Digital blog",
@@ -71,9 +97,9 @@ const links = [
     url: "https://www.gov.uk/government/news/education-secretary-sets-out-vision-for-character-and-resilience",
   },
   {
-    text: "Product Hunt launch of Hacksy",
+    text: "Hacksy, a cyber security coaching chatbot, in Product Hunt’s top 5",
     source: "Product Hunt",
-    url: "https://www.producthunt.com/posts/hacksy-by-decoded",
+    url: "https://www.producthunt.com/products/hacksy-by-decoded",
   },
 ]
 
@@ -90,7 +116,7 @@ const nameLines = ["Phil", "Sherwin-", "Nicholls"].map((line) =>
   <div class="page">
     <main>
       <header class="masthead">
-        <p class="label">Design / Technology / Data / Mentoring</p>
+        <p class="label">Design leader / Head of design at frog</p>
         <h1 class="name">
           <span class="visually-hidden">Phil Sherwin-Nicholls</span>
           <span aria-hidden="true">
@@ -110,9 +136,9 @@ const nameLines = ["Phil", "Sherwin-", "Nicholls"].map((line) =>
       <section class="block" aria-labelledby="about">
         <h2 class="label" id="about"><span aria-hidden="true">00 / </span>About</h2>
         <div>
-          <p class="lead">A service designer, digital technologist and mentor.</p>
+          <p class="lead">A design leader with over a decade of building and scaling high-performing design teams.</p>
           <p class="lead">
-            Working at the intersection of technology, data and design &mdash; I help governments, businesses and charities solve wicked, population scale problems.
+            I bring design, data and technology together to unlock new value across government and complex organisations.
           </p>
           <p class="contact">
             Get in touch via <a target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/in/philsn/">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span><span aria-hidden="true">&nbsp;↗</span></a>
@@ -120,14 +146,27 @@ const nameLines = ["Phil", "Sherwin-", "Nicholls"].map((line) =>
         </div>
       </section>
 
+      <section class="block" aria-labelledby="experience">
+        <h2 class="label" id="experience"><span aria-hidden="true">01 / </span>Experience</h2>
+        <ol class="rows">
+          {experience.map((job) => (
+            <li class="row job">
+              <h3 class="title">{job.org ? `${job.role}, ${job.org}` : job.role}</h3>
+              <p class="label client">{job.years}</p>
+              <p class="desc">{job.description}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
       <section class="block" aria-labelledby="work">
-        <h2 class="label" id="work"><span aria-hidden="true">01 / </span>Selected work</h2>
+        <h2 class="label" id="work"><span aria-hidden="true">02 / </span>Selected work</h2>
         <ol class="rows">
           {jobs.map((job, i) => (
             <li class="row job">
               <span class="label num" aria-hidden="true">{pad(i + 1)}</span>
               <h3 class="title">{job.role}</h3>
-              {job.client && <p class="label client">{job.client}</p>}
+              <p class="label client">{job.label}</p>
               <p class="desc">{job.description}</p>
             </li>
           ))}
@@ -135,7 +174,7 @@ const nameLines = ["Phil", "Sherwin-", "Nicholls"].map((line) =>
       </section>
 
       <section class="block" aria-labelledby="featured">
-        <h2 class="label" id="featured"><span aria-hidden="true">02 / </span>Featured in</h2>
+        <h2 class="label" id="featured"><span aria-hidden="true">03 / </span>Featured in</h2>
         <ol class="rows">
           {links.map((link, i) => (
             <li class="row">
@@ -357,6 +396,10 @@ const nameLines = ["Phil", "Sherwin-", "Nicholls"].map((line) =>
     font-weight: 500;
     line-height: 1.15;
     text-wrap: balance;
+  }
+
+  .job .title {
+    grid-column: 2;
   }
 
   .desc {
