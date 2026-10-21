@@ -1,0 +1,155 @@
+---
+import Layout from "../layouts/Layout.astro"
+
+const jobs = [
+  {
+    client: "DCMS",
+    role: "Helping government make better use of data",
+    description: "Taking a holistic view of the data landscape to enable better knowledge sharing with DCMS's users.",
+  },
+  {
+    client: "DCMS",
+    role: "Building the foundations of a digital transformation programme for DCMS",
+    description: "Mapping of DCMS's services and service lines to develop a user-centered roadmap for change.",
+  },
+  {
+    client: "DfE",
+    role: "Coaching and mentoring in organisational service transformation",
+    description: "Upskilling leadership and service teams across government.",
+  },
+  {
+    client: "DfE",
+    role: "Co-designing a service to help people retrain into new careers",
+    description: "Service design lead on the National Retraining Scheme - £100m multichannel service for the DfE with multiple products, integrating careers guidance, online learning and job search.",
+  },
+  {
+    client: "The Planning Inspectorate",
+    role: "Redesigning how people have their say about national infrastructure projects",
+    description: "Designing multiple products, support mechanisms and comms with the Planning Inspectorate to improve efficiency, accessibility and brand trust.",
+  },
+  {
+    client: "Parity Projects",
+    role: "Helping reduce fuel poverty in England",
+    description: "Redesigning a service that helps property owners make their buildings more energy efficient.",
+  },
+  {
+    client: "Florence",
+    role: "Creating a strategy and design system for rapid development of health care services",
+    description: "Working with Florence to enable faster prototyping and more accessible digital services for health care professionals.",
+  },
+  {
+    client: "Cabinet Office",
+    role: "Designing an AI-powered search engine for government",
+    description: "Helping the Cabinet office make sense of the knowledge trapped in billions of documents spread across government.",
+  },
+]
+
+const links = [
+  {
+    text: "Designing a retraining scheme that meets user needs",
+    url: "https://dfedigital.blog.gov.uk/2018/12/20/designing-a-retraining-scheme-that-meets-user-needs/",
+  },
+  {
+    text: "Are you an easy hacking target? Cybersecurity tips for small business",
+    url: "https://www.theguardian.com/small-business-network/2017/sep/08/are-you-an-easy-hacking-target-cyber-security-tips-for-small-business",
+  },
+  {
+    text: "Education Secretary sets out vision for character and resilience",
+    url: "https://www.gov.uk/government/news/education-secretary-sets-out-vision-for-character-and-resilience",
+  },
+  {
+    text: "Product hunt launch of Hacksy",
+    url: "https://www.producthunt.com/posts/hacksy-by-decoded",
+  },
+]
+---
+
+<Layout>
+  <main>
+    <section>
+      <h1>Phil Sherwin-Nicholls</h1>
+      <p>A service designer, digital technologist and mentor.</p>
+      <p>
+        Working at the intersection of technology, data and design &mdash; I help governments, businesses and charities solve wicked, population scale problems.
+      </p>
+      <p>
+        Get in touch via <a target="_blank" rel="noopener noreferrer" href="https://www.linkedin.com/in/philsn/">LinkedIn</a>.
+      </p>
+    </section>
+    <section>
+      <h2>A few projects I've worked on:</h2>
+      <ul>
+        {jobs.map((job) => (
+          <li>
+            <h3>{job.role}</h3>
+            <p class="description">{job.description}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+    <section>
+      <h2>I've been featured in:</h2>
+      <ul>
+        {links.map((link) => (
+          <li>
+            <p><a href={link.url}>{link.text}</a></p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  main {
+    color: #232129;
+    font-family: "Clash Display Variable", -apple-system, Roboto, sans-serif, serif;
+    letter-spacing: 0.5px;
+    line-height: 1.25em;
+    font-weight: 500;
+    margin: 0 auto;
+    font-size: 36px;
+    max-width: 720px;
+    padding: 2em;
+  }
+
+  section {
+    margin-bottom: 3.33em;
+  }
+
+  h1,
+  h2 {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 0.6em;
+    color: #b85600;
+    font-weight: 500;
+  }
+
+  ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+
+  h3 {
+    font-weight: inherit;
+    font-size: inherit;
+    margin-bottom: 0;
+  }
+
+  .description {
+    color: #757575;
+    font-size: 0.56em;
+    margin-top: 0.4em;
+    line-height: 1.2em;
+    font-weight: 400;
+    margin-bottom: 0;
+  }
+
+  @media only screen and (max-width: 600px) {
+    main {
+      font-size: 24px;
+      padding: 1em;
+    }
+  }
+</style>
