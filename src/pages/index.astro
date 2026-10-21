@@ -3,6 +3,11 @@ import Layout from "../layouts/Layout.astro"
 
 const jobs = [
   {
+    client: "",
+    role: "Improving the data foundations of five organisations to unlock a potential £2bn market",
+    description: "Led a team of seven to unpick legal and cultural barriers to data sharing, prototyping tools for compliance risk and a single customer view.",
+  },
+  {
     client: "DEFRA",
     role: "Setting up a Policy Design Lab for DEFRA's £2.25b farming programme",
     description: "Designed the vision, operating model and business case for the lab. It has green-lit 12 policies and disproven two, saving an estimated £40m.",
@@ -107,7 +112,7 @@ const pad = (n: number) => String(n).padStart(2, "0")
             <span class="label num">{pad(i + 1)}</span>
             <h3 class="title">{job.role}</h3>
             <p class="desc">
-              <span class="label client">{job.client}</span>
+              {job.client && <span class="label client">{job.client}</span>}
               {job.description}
             </p>
           </li>
