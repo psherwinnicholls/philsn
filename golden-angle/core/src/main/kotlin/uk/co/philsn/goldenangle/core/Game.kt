@@ -1,7 +1,5 @@
 package uk.co.philsn.goldenangle.core
 
-import kotlin.math.max
-
 enum class Phase { READY, PLAYING, OVER }
 
 data class Seed(val angle: Double, val golden: Boolean)
@@ -14,6 +12,8 @@ sealed interface GameEvent {
         val points: Int,
         val multiplier: Int,
     ) : GameEvent
+    /** The bud just moved into the gold zone: the cue for a crown "detent" click. */
+    data object EnteredGold : GameEvent
     data class Bruised(val angle: Double, val petalsLeft: Int) : GameEvent
     data class Bloomed(val bloom: Int, val healed: Boolean) : GameEvent
     data class Over(val score: Int, val planted: Int) : GameEvent
@@ -52,6 +52,9 @@ class Game(val tuning: Tuning = Tuning.DEFAULT) {
     var goldenCount = 0
         private set
 
+    /** When the aim last entered the gold zone, or null while outside it. */
+    private var goldSince: Double? = null
+
     /** Seconds left until the next seed buds, and the length of this beat. */
     var beatLeft = 0.0
         private set
@@ -68,10 +71,15 @@ class Game(val tuning: Tuning = Tuning.DEFAULT) {
     /** The recent seeds whose shadows block the next bud. */
     fun shadowSeeds(): List<Seed> = _seeds.takeLast(memory)
 
-    /** The golden spots for the next seed: one golden angle either way from the last. */
-    fun goldenSpots(): List<Double> {
-        val last = _seeds.lastOrNull() ?: return emptyList()
-        return listOf(Angles.norm(last.angle + Angles.GOLDEN), Angles.norm(last.angle - Angles.GOLDEN))
+    /**
+     * The golden spot for the next seed: one golden angle clockwise from the
+     * last, or null before the first seed or when a shadow covers it. Only one
+     * direction, so steady golden play draws a true sunflower.
+     */
+    fun goldenSpot(): Double? {
+        val last = _seeds.lastOrNull() ?: return null
+        val spot = Angles.norm(last.angle + Angles.GOLDEN)
+        return if (clearance(spot) >= 0) spot else null
     }
 
     /** Degrees between [angle] and the nearest shadow edge; negative inside a shadow. */
@@ -80,8 +88,9 @@ class Game(val tuning: Tuning = Tuning.DEFAULT) {
         return shadowSeeds().minOfOrNull { Angles.dist(angle, it.angle) - w } ?: 180.0
     }
 
+    /** Within the gold zone a seed snaps onto the golden spot, so it is always safe. */
     fun isGolden(angle: Double): Boolean =
-        clearance(angle) >= 0 && goldenSpots().any { Angles.dist(angle, it) <= tuning.goldenTolerance }
+        goldenSpot()?.let { Angles.dist(angle, it) <= tuning.goldenTolerance } ?: false
 
     fun rotate(deltaDegrees: Double) {
         if (phase == Phase.OVER) return
@@ -102,6 +111,7 @@ class Game(val tuning: Tuning = Tuning.DEFAULT) {
         bloom = 0
         elapsed = 0.0
         goldenCount = 0
+        goldSince = null
         beatLength = tuning.intervalFor(0) + tuning.firstSeedDelay
         beatLeft = beatLength
         phase = Phase.PLAYING
@@ -111,6 +121,7 @@ class Game(val tuning: Tuning = Tuning.DEFAULT) {
     fun update(dt: Double): List<GameEvent> {
         if (phase != Phase.PLAYING || dt <= 0) return emptyList()
         val events = ArrayList<GameEvent>(2)
+        trackGoldZone(events)
         var remaining = dt
         while (remaining > 0 && phase == Phase.PLAYING) {
             val step = minOf(remaining, beatLeft)
@@ -122,8 +133,22 @@ class Game(val tuning: Tuning = Tuning.DEFAULT) {
         return events
     }
 
+    private fun trackGoldZone(events: MutableList<GameEvent>) {
+        if (isGolden(aim)) {
+            if (goldSince == null) {
+                goldSince = elapsed
+                events += GameEvent.EnteredGold
+            }
+        } else {
+            goldSince = null
+        }
+    }
+
     private fun plant(events: MutableList<GameEvent>) {
-        val angle = aim
+        val golden = isGolden(aim)
+        // Reaching gold in the dying moments of the beat is a near miss too.
+        val justInTime = golden && elapsed - (goldSince ?: elapsed) < tuning.justInTime
+        val angle = if (golden) goldenSpot()!! else aim
         val clear = clearance(angle)
         var grace = 1.0
         if (clear < 0) {
@@ -138,7 +163,6 @@ class Game(val tuning: Tuning = Tuning.DEFAULT) {
             // A bruise leaves the aim inside a shadow; give time to get out.
             grace = 1.5
         } else {
-            val golden = isGolden(angle)
             streak = if (golden) streak + 1 else 0
             if (golden) goldenCount++
             val mult = multiplier
@@ -146,7 +170,7 @@ class Game(val tuning: Tuning = Tuning.DEFAULT) {
             planted++
             _seeds.addLast(Seed(angle, golden))
             if (_seeds.size > MAX_SEEDS) _seeds.removeFirst()
-            events += GameEvent.Planted(angle, golden, clear < tuning.nearMissMargin, mult, mult)
+            events += GameEvent.Planted(angle, golden, justInTime || (!golden && clear < tuning.nearMissMargin), mult, mult)
 
             val newBloom = tuning.bloomFor(planted)
             if (newBloom > bloom) {
@@ -156,8 +180,9 @@ class Game(val tuning: Tuning = Tuning.DEFAULT) {
                 events += GameEvent.Bloomed(bloom, heal)
             }
         }
-        beatLength = max(tuning.minInterval, tuning.intervalFor(bloom)) * grace
+        beatLength = tuning.intervalFor(bloom) * grace
         beatLeft = beatLength
+        goldSince = null
     }
 
     companion object {

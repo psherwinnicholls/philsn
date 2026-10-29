@@ -30,11 +30,11 @@ sealed interface Shape {
 
 object Palette {
     const val BACKGROUND = 0xFF0B0907
-    const val TRACK = 0xFF2A2219
-    const val SHADOW = 0xFF6B2A1F
-    const val SHADOW_EDGE = 0xFFA4432F
+    const val TRACK = 0xFF231C14
+    const val SHADOW = 0xFF3D1C15
+    const val SHADOW_EDGE = 0xFFD0503A
     const val GOLD = 0xFFF5B83D
-    const val GOLD_GLOW = 0x55F5B83DL
+    const val GOLD_GLOW = 0x70F5B83DL
     const val SEED = 0xFF7A5A33
     const val SEED_RECENT = 0xFFB98A4E
     const val SEED_GOLDEN = 0xFFE9A93A

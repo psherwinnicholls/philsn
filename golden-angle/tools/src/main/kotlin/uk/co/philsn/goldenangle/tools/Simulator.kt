@@ -29,13 +29,19 @@ data class Skill(
     val goldenIntent: Double,
     /** Chance per beat of a lapse: looking away, misreading the shadows. */
     val lapse: Double,
+    /**
+     * Has learnt the rhythm: knows where the next golden spot will be, so
+     * starts turning at once and spreads the turn across the whole beat.
+     */
+    val anticipates: Boolean = false,
 ) {
     companion object {
         val NOVICE = Skill("novice", 0.45, 0.15, 0.18, 350.0, 3.0, 0.07, 0.4, 0.04)
         val CASUAL = Skill("casual", 0.38, 0.12, 0.15, 450.0, 2.5, 0.055, 0.75, 0.025)
         val SKILLED = Skill("skilled", 0.30, 0.10, 0.12, 600.0, 2.0, 0.045, 0.95, 0.012)
         val EXPERT = Skill("expert", 0.24, 0.08, 0.10, 750.0, 1.5, 0.035, 1.0, 0.006)
-        val ALL = listOf(NOVICE, CASUAL, SKILLED, EXPERT)
+        val RHYTHM = Skill("rhythm", 0.30, 0.10, 0.12, 600.0, 2.0, 0.045, 1.0, 0.012, anticipates = true)
+        val ALL = listOf(NOVICE, CASUAL, SKILLED, EXPERT, RHYTHM)
     }
 }
 
@@ -58,6 +64,9 @@ class Bot(private val skill: Skill, private val rng: Random) {
     private var moveStart = 0.0
     private var moveTime = 0.0
     private var beatStart = 0.0
+    private var goal = 0.0
+    private var correcting = true
+    private var primary = true
     var arrivedLate = false
         private set
 
@@ -66,24 +75,47 @@ class Bot(private val skill: Skill, private val rng: Random) {
         beatStart = now
         from = game.aim
         val lapsed = rng.nextDouble() < skill.lapse
+        val golden = game.goldenSpot()
         val goal = when {
             lapsed -> Angles.norm(game.aim + rng.nextDouble(-60.0, 60.0))
+            skill.anticipates && golden != null -> golden
             else -> chooseTarget(game)
         }
         val distance = abs(Angles.delta(from, goal))
         val noise = gaussian() * (skill.noiseBase + skill.noisePerDegree * distance)
-        target = from + Angles.delta(from, goal) + noise
-        moveStart = now + skill.reaction * (0.85 + 0.3 * rng.nextDouble())
-        val fitts = skill.fittsA + skill.fittsB * log2(1.0 + distance / 4.0)
-        moveTime = max(fitts, distance / skill.maxSpeed)
+        this.goal = from + Angles.delta(from, goal)
+        correcting = !lapsed
+        target = this.goal + noise
+        // Fitts' law: the wider the landing zone, the faster the move.
+        val zone = if (goal == golden) 2 * game.tuning.goldenTolerance else (2 * game.clearance(goal)).coerceIn(4.0, 30.0)
+        val fitts = skill.fittsA + skill.fittsB * log2(1.0 + distance / zone)
+        if (skill.anticipates && !lapsed && goal == golden) {
+            // A steady, rhythmic turn that lands just before the beat.
+            moveStart = now + 0.06
+            moveTime = max(game.beatLength * 0.8, distance / skill.maxSpeed)
+        } else {
+            moveStart = now + skill.reaction * (0.85 + 0.3 * rng.nextDouble())
+            moveTime = max(fitts, distance / skill.maxSpeed)
+        }
         arrivedLate = false
+        primary = true
     }
 
     /** Where the crown has the aim at time [now]. */
     fun aimAt(now: Double, beatEndsAt: Double): Double {
+        // Once a movement ends, people see the error and make a smaller
+        // corrective movement if there is time before the beat.
+        val error = goal - target
+        if (correcting && now >= moveStart + moveTime + skill.reaction * 0.6 && abs(error) > 1.5) {
+            from = target
+            target = goal + gaussian() * (skill.noiseBase * 0.5 + skill.noisePerDegree * abs(error))
+            moveStart = now
+            primary = false
+            moveTime = skill.fittsA + skill.fittsB * log2(1.0 + abs(error) / 4.0)
+        }
         if (now < moveStart) return from
         val t = ((now - moveStart) / moveTime).coerceIn(0.0, 1.0)
-        if (beatEndsAt - now < 1e-6 && t < 1.0) arrivedLate = true
+        if (beatEndsAt - now < 1e-6 && t < 1.0 && primary) arrivedLate = true
         // Minimum-jerk profile, the usual shape of a human reaching movement.
         val s = t * t * t * (10 - 15 * t + 6 * t * t)
         return from + (target - from) * s
@@ -92,8 +124,7 @@ class Bot(private val skill: Skill, private val rng: Random) {
     private fun chooseTarget(game: Game): Double {
         val wantsGolden = rng.nextDouble() < skill.goldenIntent
         if (wantsGolden) {
-            val spots = game.goldenSpots().filter { game.clearance(it) >= 2.0 }
-            spots.minByOrNull { Angles.dist(it, game.aim) }?.let { return it }
+            game.goldenSpot()?.let { return it }
         }
         // Otherwise the roomiest gap that isn't too far away.
         var best = game.aim
@@ -157,6 +188,34 @@ object Simulator {
             if (newBeat && game.phase == Phase.PLAYING) bot.plan(game, now)
         }
         return RunResult(now, game.planted, game.score, game.bloom, game.goldenCount, near, bruises, late, bruiseTimes)
+    }
+
+    /** Bruises per beat in each bloom, pooled over many runs. */
+    fun bruiseRates(tuning: Tuning, skill: Skill, runs: Int): Map<Int, Double> {
+        val beats = HashMap<Int, Int>()
+        val bruises = HashMap<Int, Int>()
+        repeat(runs) { i ->
+            val rng = Random(7919L * i + skill.name.hashCode())
+            val game = Game(tuning)
+            val bot = Bot(skill, rng)
+            game.start()
+            game.aimAt(rng.nextDouble(360.0))
+            var now = 0.0
+            bot.plan(game, now)
+            while (game.phase == Phase.PLAYING && now < MAX_SECONDS) {
+                val beatEndsAt = now + game.beatLeft
+                val bloom = game.bloom
+                now += DT
+                game.aimAt(bot.aimAt(now, beatEndsAt))
+                val events = game.update(DT)
+                if (events.any { it is GameEvent.Planted || it is GameEvent.Bruised }) {
+                    beats.merge(bloom, 1, Int::plus)
+                    if (events.any { it is GameEvent.Bruised }) bruises.merge(bloom, 1, Int::plus)
+                    if (game.phase == Phase.PLAYING) bot.plan(game, now)
+                }
+            }
+        }
+        return beats.filterValues { it >= 50 }.mapValues { (b, n) -> (bruises[b] ?: 0).toDouble() / n }
     }
 
     data class Summary(

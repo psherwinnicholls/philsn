@@ -22,6 +22,7 @@ fun main(args: Array<String>) {
             Skill.SKILLED,
             seed = 42,
         )
+        "diag" -> printDiagnostics(tuning, args.getOrNull(1)?.toInt() ?: 300)
         else -> error("Unknown command ${args.first()}")
     }
 }
@@ -37,5 +38,20 @@ fun printSimulation(tuning: Tuning, runs: Int) {
                 "${"%.1f".format(s.nearMissPerMin)} | ${"%.0f".format(100 * s.lateShare)}% | ${"%.0f".format(s.firstBruiseMedian)}s | " +
                 "${"%.0f".format(100 * s.capped)}% |",
         )
+    }
+}
+
+/** Per bloom: beat length, shadow width, and how often each skill bruises per seed. */
+fun printDiagnostics(tuning: Tuning, runs: Int) {
+    val blooms = 0..8
+    println("| Bloom | Beat | Memory | Shadow ±° | Gold clearance ° | " + Skill.ALL.joinToString(" | ") { "${it.name} bruise/seed" } + " |")
+    println("|---|---|---|---|---|" + Skill.ALL.joinToString("") { "---|" })
+    val rates = Skill.ALL.map { skill -> Simulator.bruiseRates(tuning, skill, runs) }
+    for (b in blooms) {
+        val w = tuning.shadowHalfWidth(b)
+        val clear = uk.co.philsn.goldenangle.core.Angles.goldenClearance(tuning.memoryFor(b)) - w
+        print("| $b | ${"%.2f".format(tuning.intervalFor(b))}s | ${tuning.memoryFor(b)} | ${"%.1f".format(w)} | ${"%.1f".format(clear)} |")
+        for (r in rates) print(" ${r[b]?.let { "%.1f%%".format(100 * it) } ?: "–"} |")
+        println()
     }
 }

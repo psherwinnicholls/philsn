@@ -1,6 +1,5 @@
 package uk.co.philsn.goldenangle.core
 
-import kotlin.math.max
 import kotlin.math.pow
 
 /**
@@ -11,20 +10,25 @@ data class Tuning(
     /** Seeds planted at which each new bloom (level) starts. */
     val bloomAt: List<Int> = listOf(0, 5, 13, 34, 55, 89, 144, 233, 377, 610, 987),
     /** How many recent seeds cast shadows, per bloom; the last value repeats. */
-    val memory: List<Int> = listOf(1, 2, 3, 5, 8, 13),
+    val memory: List<Int> = listOf(1, 2, 3, 5, 5, 8),
     /** Shadow half-width as a fraction of the golden clearance for that memory. */
-    val shadowFraction: Double = 0.6,
-    /** Seconds between seeds at bloom 0. */
-    val startInterval: Double = 1.25,
-    /** Each bloom multiplies the interval by this. */
-    val intervalDecay: Double = 0.9,
-    val minInterval: Double = 0.42,
+    val shadowFraction: Double = 0.45,
+    /**
+     * Beat length is [minInterval] + [intervalSpan] × [intervalDecay]^bloom:
+     * it keeps shrinking forever but never reaches the floor, so the game
+     * is endless while each bloom (which come further apart) is a bit faster.
+     */
+    val intervalSpan: Double = 0.95,
+    val intervalDecay: Double = 0.88,
+    val minInterval: Double = 0.35,
     /** Extra time before the very first seed. */
     val firstSeedDelay: Double = 1.0,
     /** Within this many degrees of a golden spot counts as golden. */
-    val goldenTolerance: Double = 11.0,
+    val goldenTolerance: Double = 10.0,
     /** Clear of the shadows by less than this counts as a near miss. */
     val nearMissMargin: Double = 4.0,
+    /** Reaching the gold zone less than this many seconds before the drop is a near miss. */
+    val justInTime: Double = 0.12,
     val petals: Int = 3,
     /** A new bloom gives back one lost petal. */
     val bloomHeals: Boolean = true,
@@ -40,7 +44,7 @@ data class Tuning(
 
     fun shadowHalfWidth(bloom: Int): Double = shadowFraction * Angles.goldenClearance(memoryFor(bloom))
 
-    fun intervalFor(bloom: Int): Double = max(minInterval, startInterval * intervalDecay.pow(bloom))
+    fun intervalFor(bloom: Int): Double = minInterval + intervalSpan * intervalDecay.pow(bloom)
 
     companion object {
         val DEFAULT = Tuning()

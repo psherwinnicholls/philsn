@@ -24,11 +24,11 @@ class Effects {
             is GameEvent.Planted -> {
                 _active += Fx(Kind.PLANT, e.angle, 0)
                 if (e.golden) _active += Fx(Kind.GOLDEN, e.angle, e.multiplier)
-                else if (e.nearMiss) _active += Fx(Kind.NEAR_MISS, e.angle, 0)
+                if (e.nearMiss) _active += Fx(Kind.NEAR_MISS, e.angle, if (e.golden) 1 else 0)
             }
             is GameEvent.Bruised -> _active += Fx(Kind.BRUISE, e.angle, e.petalsLeft)
             is GameEvent.Bloomed -> _active += Fx(Kind.BLOOM, 0.0, e.bloom)
-            is GameEvent.Over -> {}
+            is GameEvent.Over, GameEvent.EnteredGold -> {}
         }
     }
 

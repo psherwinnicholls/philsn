@@ -18,9 +18,10 @@ data class View(
 object SceneBuilder {
     const val RING = 0.84
     private const val TRACK_WIDTH = 0.075
-    private const val FLOWER_RADIUS = 0.66
+    private const val FLOWER_RADIUS = 0.7
+    private const val EYE = 0.2
     private const val FADE_FROM = 0.72
-    private const val FADE_TO = 0.8
+    private const val FADE_TO = 0.79
 
     fun build(game: Game, fx: Effects, view: View): List<Shape> {
         val out = ArrayList<Shape>(game.seeds.size + 40)
@@ -45,11 +46,10 @@ object SceneBuilder {
         val w = game.shadowHalfWidth
         for (s in game.shadowSeeds()) {
             out += Shape.Arc(RING, TRACK_WIDTH, s.angle - w, 2 * w, Palette.SHADOW)
-            out += Shape.Arc(RING, TRACK_WIDTH, s.angle - w, 0.8, Palette.SHADOW_EDGE)
-            out += Shape.Arc(RING, TRACK_WIDTH, s.angle + w - 0.8, 0.8, Palette.SHADOW_EDGE)
+            out += Shape.Arc(RING, TRACK_WIDTH, s.angle - w, 1.2, Palette.SHADOW_EDGE)
+            out += Shape.Arc(RING, TRACK_WIDTH, s.angle + w - 1.2, 1.2, Palette.SHADOW_EDGE)
         }
-        for (spot in game.goldenSpots()) {
-            if (game.clearance(spot) < 0) continue
+        game.goldenSpot()?.let { spot ->
             val (x, y) = polar(spot, RING)
             out += Shape.Arc(RING, TRACK_WIDTH, spot - game.tuning.goldenTolerance, 2 * game.tuning.goldenTolerance, Palette.GOLD_GLOW)
             out += Shape.Disc(x, y, 0.022, Palette.GOLD)
@@ -61,14 +61,18 @@ object SceneBuilder {
         hud(game, view, out)
     }
 
-    /** The seed head: newest seeds at the centre, older ones pushed outwards. */
+    /**
+     * The seed head. Vogel's model puts seed k at radius c·√k; here the newest
+     * seed sits on the rim of the flower's eye (where the score lives) and
+     * older seeds are pushed outwards: r = √(eye² + c²·age).
+     */
     private fun flower(seeds: List<Seed>, recent: Int, alpha: Double, out: MutableList<Shape>) {
         val n = seeds.size
         if (n == 0) return
-        val c = FLOWER_RADIUS / sqrt(n.coerceIn(21, 233).toDouble())
+        val c = sqrt((FLOWER_RADIUS * FLOWER_RADIUS - EYE * EYE) / n.coerceIn(34, 233))
         for (i in 0 until n) {
             val age = n - 1 - i
-            val r = c * sqrt(age + 0.6)
+            val r = sqrt(EYE * EYE + c * c * age)
             if (r > FADE_TO) continue
             val s = seeds[i]
             val (x, y) = polar(s.angle, r)
@@ -78,8 +82,9 @@ object SceneBuilder {
                 s.golden -> Palette.SEED_GOLDEN
                 else -> Palette.SEED
             }
-            val size = c * 0.5 * (0.8 + 0.35 * (age.coerceAtMost(89) / 89.0))
-            out += Shape.Disc(x, y, size, Palette.withAlpha(base, fade * alpha))
+            // Teardrop seeds pointing away from the centre, larger towards the rim.
+            val size = c * (0.75 + 0.3 * (r - EYE) / (FLOWER_RADIUS - EYE))
+            out += Shape.Petal(x, y, size * 1.25, size * 0.8, s.angle, Palette.withAlpha(base, fade * alpha))
         }
     }
 
@@ -88,8 +93,8 @@ object SceneBuilder {
         val p = game.beatProgress
         val clear = game.clearance(game.aim)
         val color = when {
-            clear < 0 -> Palette.BRUISE
             game.isGolden(game.aim) -> Palette.GOLD
+            clear < 0 -> Palette.BRUISE
             else -> Palette.BUD
         }
         out += Shape.Line(x * 0.9, y * 0.9, x * 0.8, y * 0.8, 0.012, Palette.withAlpha(color, 0.5))
@@ -110,7 +115,6 @@ object SceneBuilder {
     }
 
     private fun hud(game: Game, view: View, out: MutableList<Shape>) {
-        out += Shape.Disc(0.0, 0.0, 0.2, Palette.withAlpha(Palette.BACKGROUND, 0.78))
         out += Shape.Text(0.0, -0.02, 0.15, game.score.toString(), Palette.TEXT, bold = true)
         val m = game.multiplier
         if (m > 1) out += Shape.Text(0.0, 0.13, 0.07, "×$m", Palette.GOLD, bold = true)
@@ -144,7 +148,9 @@ object SceneBuilder {
                 }
                 Effects.Kind.NEAR_MISS -> {
                     val (tx, ty) = polar(e.angle, RING - 0.16 - 0.05 * p)
-                    out += Shape.Text(tx, ty, 0.05, "close!", Palette.withAlpha(Palette.TEXT, 1 - p))
+                    // Golden-and-late reads "Just!"; dodging a shadow edge reads "Close!".
+                    val (tx2, ty2) = if (e.value == 1) polar(e.angle, RING - 0.27 - 0.05 * p) else Pair(tx, ty)
+                    out += Shape.Text(tx2, ty2, 0.05, if (e.value == 1) "Just!" else "Close!", Palette.withAlpha(Palette.TEXT, 1 - p))
                 }
                 Effects.Kind.BRUISE -> {
                     val (x, y) = polar(e.angle, RING)
@@ -166,8 +172,9 @@ object SceneBuilder {
     private fun ready(view: View, out: MutableList<Shape>) {
         // A slowly turning golden sunflower as the attract screen.
         val demo = attractFlower(view.clock)
-        flower(demo, 0, 0.55, out)
-        out += Shape.Disc(0.0, 0.0, 1.0, Palette.withAlpha(Palette.BACKGROUND, 0.35))
+        flower(demo, 0, 0.5, out)
+        out += Shape.Disc(0.0, 0.0, 1.0, Palette.withAlpha(Palette.BACKGROUND, 0.3))
+        out += Shape.Disc(0.0, 0.05, 0.5, Palette.withAlpha(Palette.BACKGROUND, 0.75))
         for (i in 0 until 3) {
             val angle = (i - 1) * 14.0
             val (x, y) = polar(angle, 0.94)
@@ -182,8 +189,9 @@ object SceneBuilder {
     }
 
     private fun over(game: Game, view: View, out: MutableList<Shape>) {
-        flower(game.seeds, 0, 0.5, out)
-        out += Shape.Disc(0.0, 0.0, 1.0, Palette.withAlpha(Palette.BACKGROUND, 0.45))
+        flower(game.seeds, 0, 0.6, out)
+        out += Shape.Disc(0.0, 0.0, 1.0, Palette.withAlpha(Palette.BACKGROUND, 0.3))
+        out += Shape.Disc(0.0, 0.0, 0.55, Palette.withAlpha(Palette.BACKGROUND, 0.7))
         petals(0, game.tuning.petals, Effects(), out)
         out += Shape.Text(0.0, -0.4, 0.065, "Wilted", Palette.TEXT_DIM)
         out += Shape.Text(0.0, -0.16, 0.2, game.score.toString(), Palette.TEXT, bold = true)
