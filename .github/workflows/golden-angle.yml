@@ -1,0 +1,68 @@
+name: Golden Angle (Wear OS game)
+
+on:
+  push:
+    paths:
+      - "golden-angle/**"
+      - ".github/workflows/golden-angle.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: golden-angle-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: golden-angle
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Unit tests
+        run: ./gradlew --no-daemon :core:test
+
+      - name: Build debug APK and release bundle
+        run: ./gradlew --no-daemon :app:assembleDebug :app:bundleRelease
+
+      - name: Lint
+        run: ./gradlew --no-daemon :app:lintDebug
+
+      - name: Playtest simulation and screenshots
+        run: |
+          ./gradlew --no-daemon :tools:installDist
+          ./tools/build/install/tools/bin/tools sim 400 | tee build/playtest.md
+          ./tools/build/install/tools/bin/tools shots build/screenshots 456
+
+      - name: Upload APK and AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-angle-builds
+          path: |
+            golden-angle/app/build/outputs/apk/debug/*.apk
+            golden-angle/app/build/outputs/bundle/release/*.aab
+
+      - name: Upload reports and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golden-angle-reports
+          path: |
+            golden-angle/build/playtest.md
+            golden-angle/build/screenshots
+            golden-angle/app/build/reports/lint-results-debug.html
+            golden-angle/core/build/reports/tests

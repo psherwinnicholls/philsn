@@ -11,6 +11,10 @@ data class View(
     val newBest: Boolean = false,
     val showHints: Boolean = false,
     val ambient: Boolean = false,
+    /** Mid-game but frozen (the app was left or the screen dimmed); waits for a tap. */
+    val paused: Boolean = false,
+    /** Small print at the foot of the start screen, e.g. the crown speed setting. */
+    val footer: String? = null,
     /** Seconds since the app opened; drives idle animation. */
     val clock: Double = 0.0,
 )
@@ -32,7 +36,14 @@ object SceneBuilder {
         out += Shape.Disc(0.0, 0.0, 1.0, Palette.BACKGROUND)
         when (game.phase) {
             Phase.READY -> ready(view, out)
-            Phase.PLAYING -> playing(game, fx, view, out)
+            Phase.PLAYING -> {
+                playing(game, fx, view, out)
+                if (view.paused) {
+                    out += Shape.Disc(0.0, 0.0, 1.0, Palette.withAlpha(Palette.BACKGROUND, 0.7))
+                    out += Shape.Text(0.0, -0.08, 0.09, "Paused", Palette.TEXT, bold = true)
+                    out += Shape.Text(0.0, 0.12, 0.058, "Tap to carry on", Palette.TEXT_DIM)
+                }
+            }
             Phase.OVER -> over(game, view, out)
         }
         return out
@@ -186,6 +197,7 @@ object SceneBuilder {
         if (view.best > 0) out += Shape.Text(0.0, 0.25, 0.06, "Best ${view.best}", Palette.TEXT)
         val pulse = 0.55 + 0.45 * sin(view.clock * 3.0)
         out += Shape.Text(0.0, 0.45, 0.058, "Tap to play", Palette.withAlpha(Palette.TEXT, pulse))
+        view.footer?.let { out += Shape.Text(0.0, 0.72, 0.045, it, Palette.TEXT_DIM) }
     }
 
     private fun over(game: Game, view: View, out: MutableList<Shape>) {
