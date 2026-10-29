@@ -1,8 +1,8 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Theme.GoldenAngle" parent="android:Theme.DeviceDefault">
         <item name="android:windowBackground">@android:color/black</item>
         <item name="android:windowNoTitle">true</item>
         <!-- Dragging round the rim aims the bud, so a sideways swipe must not close the game. -->
-        <item name="android:windowSwipeToDismiss">false</item>
+        <item name="android:windowSwipeToDismiss" tools:ignore="WearBackNavigation">false</item>
     </style>
 </resources>
