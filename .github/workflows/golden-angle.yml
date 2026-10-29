@@ -40,7 +40,9 @@ jobs:
         run: ./gradlew --no-daemon :app:assembleDebug :app:bundleRelease
 
       - name: Lint
-        run: ./gradlew --no-daemon :app:lintDebug
+        run: |
+          ./gradlew --no-daemon :app:lintDebug
+          cat app/build/reports/lint-results-debug.txt
 
       - name: Playtest simulation and screenshots
         run: |

@@ -57,9 +57,9 @@ android {
     }
 
     lint {
-        // Print findings into the CI log as well as the HTML report.
+        // A plain-text copy of the findings, which CI prints into its log.
         textReport = true
-        textOutput = file("stdout")
+        textOutput = file("build/reports/lint-results-debug.txt")
     }
 }
 
