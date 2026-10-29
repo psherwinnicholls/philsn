@@ -11,6 +11,10 @@ class Prefs(context: Context) {
         get() = sp.getInt("best", 0)
         set(value) = sp.edit { putInt("best", value) }
 
+    var bestBloom: Int
+        get() = sp.getInt("best_bloom", 0)
+        set(value) = sp.edit { putInt("best_bloom", value) }
+
     var hintsDone: Boolean
         get() = sp.getBoolean("hints_done", false)
         set(value) = sp.edit { putBoolean("hints_done", value) }

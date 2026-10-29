@@ -55,6 +55,12 @@ android {
     buildFeatures {
         compose = true
     }
+
+    lint {
+        // Print findings into the CI log as well as the HTML report.
+        textReport = true
+        textOutput = file("stdout")
+    }
 }
 
 kotlin {

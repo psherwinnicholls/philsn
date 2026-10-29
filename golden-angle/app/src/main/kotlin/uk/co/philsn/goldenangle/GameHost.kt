@@ -51,6 +51,7 @@ class GameHost(private val prefs: Prefs, private val haptics: Haptics) {
             overAt = clock
             newBest = e.score > prefs.best
             if (newBest) prefs.best = e.score
+            if (game.bloom > prefs.bestBloom) prefs.bestBloom = game.bloom
             if (game.planted >= 8) prefs.hintsDone = true
         }
     }
@@ -94,6 +95,7 @@ class GameHost(private val prefs: Prefs, private val haptics: Haptics) {
         fx,
         View(
             best = prefs.best,
+            bestBloom = prefs.bestBloom,
             newBest = newBest,
             showHints = !prefs.hintsDone,
             ambient = ambient,

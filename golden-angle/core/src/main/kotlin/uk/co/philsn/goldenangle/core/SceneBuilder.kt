@@ -8,6 +8,8 @@ import kotlin.math.sqrt
 /** Everything outside the game rules that changes what is drawn. */
 data class View(
     val best: Int = 0,
+    /** Highest bloom ever reached, for the start screen. */
+    val bestBloom: Int = 0,
     val newBest: Boolean = false,
     val showHints: Boolean = false,
     val ambient: Boolean = false,
@@ -23,7 +25,8 @@ object SceneBuilder {
     const val RING = 0.84
     private const val TRACK_WIDTH = 0.075
     private const val FLOWER_RADIUS = 0.7
-    private const val EYE = 0.2
+    private const val EYE = 0.25
+    private const val EYE_RING = 0.215
     private const val FADE_FROM = 0.72
     private const val FADE_TO = 0.79
 
@@ -126,9 +129,15 @@ object SceneBuilder {
     }
 
     private fun hud(game: Game, view: View, out: MutableList<Shape>) {
-        out += Shape.Text(0.0, -0.02, 0.15, game.score.toString(), Palette.TEXT, bold = true)
+        // The eye's rim fills up towards the next bloom.
+        out += Shape.Ring(0.0, 0.0, EYE_RING, 0.012, Palette.TRACK)
+        out += Shape.Arc(EYE_RING, 0.012, 0.0, 360.0 * game.bloomProgress, Palette.withAlpha(Palette.GOLD, 0.8), roundCaps = true)
+        val text = game.score.toString()
+        // Keep long scores inside the eye.
+        val size = 0.12 * minOf(1.0, 4.0 / text.length)
+        out += Shape.Text(0.0, -0.03, size, text, Palette.TEXT, bold = true)
         val m = game.multiplier
-        if (m > 1) out += Shape.Text(0.0, 0.13, 0.07, "×$m", Palette.GOLD, bold = true)
+        if (m > 1) out += Shape.Text(0.0, 0.11, 0.055, "×$m", Palette.GOLD, bold = true)
 
         if (view.showHints) {
             val hint = when {
@@ -194,7 +203,10 @@ object SceneBuilder {
         out += Shape.Text(0.0, -0.24, 0.12, "Golden", Palette.GOLD, bold = true)
         out += Shape.Text(0.0, -0.08, 0.12, "Angle", Palette.GOLD, bold = true)
         out += Shape.Text(0.0, 0.08, 0.055, "137.5°", Palette.TEXT_DIM)
-        if (view.best > 0) out += Shape.Text(0.0, 0.25, 0.06, "Best ${view.best}", Palette.TEXT)
+        if (view.best > 0) {
+            out += Shape.Text(0.0, 0.25, 0.06, "Best ${view.best}", Palette.TEXT)
+            out += Shape.Text(0.0, 0.34, 0.045, "Grew ${Tuning.DEFAULT.aBloom(view.bestBloom)}", Palette.TEXT_DIM)
+        }
         val pulse = 0.55 + 0.45 * sin(view.clock * 3.0)
         out += Shape.Text(0.0, 0.45, 0.058, "Tap to play", Palette.withAlpha(Palette.TEXT, pulse))
         view.footer?.let { out += Shape.Text(0.0, 0.72, 0.045, it, Palette.TEXT_DIM) }
@@ -203,18 +215,24 @@ object SceneBuilder {
     private fun over(game: Game, view: View, out: MutableList<Shape>) {
         flower(game.seeds, 0, 0.6, out)
         out += Shape.Disc(0.0, 0.0, 1.0, Palette.withAlpha(Palette.BACKGROUND, 0.3))
-        out += Shape.Disc(0.0, 0.0, 0.55, Palette.withAlpha(Palette.BACKGROUND, 0.7))
+        out += Shape.Disc(0.0, 0.0, 0.58, Palette.withAlpha(Palette.BACKGROUND, 0.72))
         petals(0, game.tuning.petals, Effects(), out)
-        out += Shape.Text(0.0, -0.4, 0.065, "Wilted", Palette.TEXT_DIM)
-        out += Shape.Text(0.0, -0.16, 0.2, game.score.toString(), Palette.TEXT, bold = true)
+        out += Shape.Text(0.0, -0.42, 0.055, "You grew ${game.tuning.aBloom(game.bloom)}", Palette.GOLD)
+        out += Shape.Text(0.0, -0.18, 0.2, game.score.toString(), Palette.TEXT, bold = true)
         if (view.newBest) {
-            out += Shape.Text(0.0, 0.08, 0.065, "New best!", Palette.GOLD, bold = true)
+            out += Shape.Text(0.0, 0.06, 0.065, "New best!", Palette.GOLD, bold = true)
         } else {
-            out += Shape.Text(0.0, 0.08, 0.06, "Best ${view.best}", Palette.TEXT)
+            out += Shape.Text(0.0, 0.06, 0.06, "Best ${view.best}", Palette.TEXT)
         }
         val pct = if (game.planted == 0) 0 else 100 * game.goldenCount / game.planted
-        out += Shape.Text(0.0, 0.24, 0.048, "${game.planted} seeds · $pct% golden", Palette.TEXT_DIM)
-        out += Shape.Text(0.0, 0.45, 0.058, "Tap to replay", Palette.TEXT)
+        out += Shape.Text(0.0, 0.2, 0.046, "${game.planted} seeds · $pct% golden", Palette.TEXT_DIM)
+        // "So close" is the strongest reason to press replay.
+        val toGo = game.seedsToNextBloom
+        if (toGo != null && toGo <= 8) {
+            val next = game.tuning.aBloom(game.bloom + 1)
+            out += Shape.Text(0.0, 0.31, 0.046, "$toGo ${if (toGo == 1) "seed" else "seeds"} from $next", Palette.GOLD)
+        }
+        out += Shape.Text(0.0, 0.5, 0.058, "Tap to replay", Palette.TEXT)
     }
 
     private fun ambient(game: Game, view: View, out: MutableList<Shape>) {

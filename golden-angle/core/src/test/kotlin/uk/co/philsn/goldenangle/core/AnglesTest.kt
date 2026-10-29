@@ -45,4 +45,12 @@ class AnglesTest {
         val seq = (0..9).map { fibonacciMultiplier(it, 21) }
         assertEquals(listOf(1, 2, 3, 5, 8, 13, 21, 21, 21, 21), seq)
     }
+
+    @Test
+    fun bloomNamesTakeTheRightArticle() {
+        val t = Tuning.DEFAULT
+        assertEquals("a Daisy", t.aBloom(3))
+        assertEquals("an Aster", t.aBloom(5))
+        assertEquals("a Golden Sunflower", t.aBloom(99))
+    }
 }

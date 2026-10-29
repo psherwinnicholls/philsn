@@ -8,6 +8,8 @@ import java.io.File
  *   sim [runs]                    print the bot playtest table
  *   shots <dir> [size]            render screenshots of real bot play
  *   gif <file> [size] [seconds]   render an animated GIF of a skilled bot game
+ *   store <dir>                   Play Store icon, feature graphic and screenshots
+ *   diag [runs]                   bruise rate per bloom for each skill
  */
 fun main(args: Array<String>) {
     val tuning = Tuning.DEFAULT
@@ -22,6 +24,12 @@ fun main(args: Array<String>) {
             Skill.SKILLED,
             seed = 42,
         )
+        "store" -> {
+            val dir = File(args[1])
+            val raw = File(dir, "raw").also { Shots.screenshots(it, 456, tuning) }
+            StoreArt.all(dir, raw)
+            raw.deleteRecursively()
+        }
         "diag" -> printDiagnostics(tuning, args.getOrNull(1)?.toInt() ?: 300)
         else -> error("Unknown command ${args.first()}")
     }

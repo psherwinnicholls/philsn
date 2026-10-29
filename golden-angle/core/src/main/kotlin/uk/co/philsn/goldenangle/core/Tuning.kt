@@ -10,7 +10,7 @@ data class Tuning(
     /** Seeds planted at which each new bloom (level) starts. */
     val bloomAt: List<Int> = listOf(0, 5, 13, 34, 55, 89, 144, 233, 377, 610, 987),
     /** How many recent seeds cast shadows, per bloom; the last value repeats. */
-    val memory: List<Int> = listOf(1, 2, 3, 5, 5, 8),
+    val memory: List<Int> = listOf(1, 2, 3, 5, 5, 6, 7),
     /** Shadow half-width as a fraction of the golden clearance for that memory. */
     val shadowFraction: Double = 0.45,
     /**
@@ -18,7 +18,7 @@ data class Tuning(
      * it keeps shrinking forever but never reaches the floor, so the game
      * is endless while each bloom (which come further apart) is a bit faster.
      */
-    val intervalSpan: Double = 0.95,
+    val intervalSpan: Double = 0.8,
     val intervalDecay: Double = 0.88,
     val minInterval: Double = 0.35,
     /** Extra time before the very first seed. */
@@ -28,13 +28,23 @@ data class Tuning(
     /** Clear of the shadows by less than this counts as a near miss. */
     val nearMissMargin: Double = 4.0,
     /** Reaching the gold zone less than this many seconds before the drop is a near miss. */
-    val justInTime: Double = 0.12,
+    val justInTime: Double = 0.06,
     val petals: Int = 3,
     /** A new bloom gives back one lost petal. */
     val bloomHeals: Boolean = true,
     /** Golden streak multipliers follow Fibonacci numbers up to this cap. */
     val maxMultiplier: Int = 21,
+    /** What you grew, by bloom reached; the last name repeats. */
+    val bloomNames: List<String> = listOf(
+        "Seedling", "Sprout", "Bud", "Daisy", "Marigold", "Aster",
+        "Zinnia", "Sunflower", "Giant Sunflower", "Golden Sunflower",
+    ),
 ) {
+    fun bloomName(bloom: Int): String = bloomNames[bloom.coerceIn(0, bloomNames.lastIndex)]
+
+    /** "a Daisy", "an Aster". */
+    fun aBloom(bloom: Int): String = bloomName(bloom).let { if (it.first().lowercaseChar() in "aeiou") "an $it" else "a $it" }
+
     fun bloomFor(planted: Int): Int = bloomAt.indexOfLast { planted >= it }.coerceAtLeast(0)
 
     /** Seeds needed to reach the next bloom, or null past the table's end. */

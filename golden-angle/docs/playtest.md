@@ -100,3 +100,68 @@ Bruises per seed at each bloom:
 - **The opening is slow.** A 1.3s beat with one shadow gives a novice about 25s of nothing much happening. On a watch, the first 10 seconds sell the second game.
 - **Survival times are still only about 2× apart from novice to expert,** because every bot has some lapse rate (looking away from the watch) that kills at a steady background rate. This is probably realistic. Score is where skill shows, which is the right place.
 - **There's no reason to come back tomorrow,** and nothing on the game-over screen says "you were close to something".
+
+---
+
+## Round 3: smooth the slope, quicken the start, give a reason for one more go
+
+**Changes:**
+
+1. **No more bloom-5 wall.** Memory now grows 1 → 2 → 3 → 5 → 5 → 6 → 7 and stops. Going from 5 to 6 to 7 seeds adds shadows without narrowing the gold band (6 and 7 steps back are never closer than 5). Long-run difficulty comes from the tempo alone, which players read as "I need to be quicker", not "that was unfair".
+2. **Quicker opening.** The first beat is 1.15s (was 1.3s). Beat = 0.35s + 0.8s × 0.88^bloom.
+3. **Rarer, more special "Just!".** The just-in-time window is 0.06s (was 0.12s). In the first round-3 run, the faster tempo pushed near misses to 14–19 a minute, so often they meant nothing.
+4. **A bloom progress ring** fills round the flower's eye as you approach the next bloom.
+5. **Names for what you grew:** Seedling, Sprout, Bud, Daisy, Marigold, Aster, Zinnia, Sunflower, Giant Sunflower, Golden Sunflower. The game-over screen says "You grew a Daisy". When you were within 8 seeds of the next bloom, it adds **"3 seeds from a Marigold"** in gold. The start screen shows your best flower under your best score.
+6. **The score scales down** to fit inside the eye at 4+ digits.
+
+| Skill | Median run | 10th–90th pct | Median score | 90th pct score | Median bloom | Golden rate | Near misses/min | Late bruises | First bruise |
+|---|---|---|---|---|---|---|---|---|---|
+| novice | 88s | 41–180s | 97 | 218 | 4 | 6% | 2.7 | 85% | 18s |
+| casual | 80s | 58–102s | 157 | 229 | 4 | 41% | 7.6 | 77% | 32s |
+| skilled | 127s | 81–204s | 898 | 1520 | 5 | 73% | 6.7 | 36% | 49s |
+| expert | 277s | 160–497s | 4851 | 9278 | 7 | 91% | 4.2 | 11% | 96s |
+| rhythm | 125s | 76–190s | 1026 | 1846 | 5 | 78% | 1.1 | 6% | 46s |
+
+| Bloom | Beat | Memory | Shadow ±° | Gold clearance ° | novice | casual | skilled | expert |
+|---|---|---|---|---|---|---|---|---|
+| 0 | 1.15s | 1 | 61.9 | 75.6 | 3.3% | 2.2% | 1.2% | 0.5% |
+| 1 | 1.05s | 2 | 38.2 | 46.7 | 4.1% | 1.8% | 0.9% | 0.3% |
+| 2 | 0.97s | 3 | 23.6 | 28.9 | 4.9% | 2.4% | 1.1% | 0.2% |
+| 3 | 0.90s | 5 | 14.6 | 17.9 | 6.0% | 4.4% | 2.9% | 0.3% |
+| 4 | 0.83s | 5 | 14.6 | 17.9 | 4.7% | 8.2% | 3.2% | 0.9% |
+| 5 | 0.77s | 6 | 14.6 | 17.9 | 4.6% | 14.0% | 3.7% | 1.5% |
+| 6 | 0.72s | 7 | 14.6 | 17.9 | 4.2% | – | 3.9% | 1.4% |
+| 7 | 0.68s | 7 | 14.6 | 17.9 | 9.4% | – | 6.9% | 1.4% |
+
+![Round 3 play](img/round3-play.png)
+
+![Round 3 game over](img/round3-over.png)
+
+![Gameplay](img/gameplay.gif)
+
+**Against the targets:**
+
+| Measure | Target | Round 1 | Round 3 |
+|---|---|---|---|
+| Novice median run | 30–60s | 33s ✓ | 88s ✗ (long, see below) |
+| Expert median run | 3+ min | 88s ✗ | 277s ✓ (90th pct 8 min) |
+| Skill spread, survival | 4–6× | 2.7× | 3.1× (closer) |
+| Skill spread, score | wide | 30× | 50× ✓ |
+| First bruise | ≥15s | 10s ✗ | 18s+ ✓ |
+| Deaths from impossible tempo | under half | 53–88% ✗ | 11–36% for skilled and expert ✓; casual and novice still mostly late, by choice (see below) |
+
+**Honest verdict on playability and addictiveness:**
+
+- **The hook is strong.** "Hit gold" is learnable in one beat. The haptic detent makes hitting it *feel* good. Steady golden play draws a sunflower that's genuinely pretty, and the game-over screen shows you the flower *you* made. Few watch games give you something to look at when you lose.
+- **The "one more go" loop is in place:** sub-two-minute rounds, a tap to replay, a Fibonacci multiplier that rewards streaks steeply (one ×21 seed is worth 21 safe seeds), "3 seeds from a Marigold", and a named best flower to beat.
+- **Novices outlast casual players, but score less.** Novices ignore gold and plant safely; casual players chase gold and are sometimes late. That's a fair risk-for-reward choice, and the score (97 vs 157) rewards the braver player. I've left it.
+- **Novice runs (about 90s) are longer than the 30–60s target.** On a watch that's acceptable, since there's no waiting about and something new happens every bloom. If real players find the opening dull, set `intervalSpan` to 0.7 so the first beat is about 1.05s.
+- **The biggest unknown is the crown itself.** All of this assumes a crown turn of about 137° on screen is a comfortable flick. Pixel Watch crowns report rotation in pixels that I couldn't measure from here. The start screen has a *Crown speed: slow / medium / fast* toggle (tap the bottom of the screen), and `CrownSpeed.MEDIUM` in `Prefs.kt` is the number to tune once it's on a wrist.
+- **The bot models are invented.** Crown reaction times, Fitts constants and noise are reasonable guesses, not measurements. The *trends* between rounds are trustworthy; the exact seconds are not. Ten minutes of real play on a Pixel Watch will tell you more than another round of simulation.
+
+**What I'd test first on a real watch:**
+
+1. Crown speed. Can you turn 137° in under a second without overshooting? Try all three settings.
+2. Whether the haptic tick on entering gold reads as a "detent" or just noise.
+3. Whether "Miss the red shadows" is understood without the hint (watch a friend play once without explaining it).
+4. Whether the screen stays awake during a round, and the game pauses when you lower your wrist.

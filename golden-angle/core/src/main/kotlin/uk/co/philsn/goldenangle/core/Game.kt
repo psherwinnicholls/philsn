@@ -65,6 +65,17 @@ class Game(val tuning: Tuning = Tuning.DEFAULT) {
     val memory: Int get() = tuning.memoryFor(bloom)
     val shadowHalfWidth: Double get() = tuning.shadowHalfWidth(bloom)
 
+    /** Seeds still needed for the next bloom, or null past the last one. */
+    val seedsToNextBloom: Int? get() = tuning.nextBloomAt(bloom)?.let { it - planted }
+
+    /** 0 → 1 through the current bloom. */
+    val bloomProgress: Double
+        get() {
+            val from = tuning.bloomAt[bloom.coerceAtMost(tuning.bloomAt.lastIndex)]
+            val to = tuning.nextBloomAt(bloom) ?: return 1.0
+            return ((planted - from).toDouble() / (to - from)).coerceIn(0.0, 1.0)
+        }
+
     /** 0 → 1 through the current beat. */
     val beatProgress: Double get() = if (beatLength <= 0) 1.0 else 1.0 - beatLeft / beatLength
 
