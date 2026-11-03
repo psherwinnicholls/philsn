@@ -21,13 +21,6 @@ npm run preview  # serve the built site
 - `src/styles/global.css` — font face and link styles
 - `public/` — files served as-is (font, favicons)
 
-## Piano practice app
-
-`public/piano/` is a static, no-build web app (served at `/piano/`) for learning piano with a
-MIDI keyboard over Web MIDI: note/staff/ear/chord/scale drills, falling-notes songs, a sound lab
-and custom drills/songs. Web MIDI needs HTTPS (or localhost) and Chrome/Android or a MIDI-capable
-browser app on iPad. To try it locally: `npm run dev` then open http://localhost:4321/piano/.
-
 ## Deploying
 
 Hosted on GitHub Pages, with DNS for philsn.co.uk on Cloudflare. Every push
