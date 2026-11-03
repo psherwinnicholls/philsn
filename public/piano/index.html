@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Ivory – piano practice</title>
+  <meta name="description" content="Learn piano with your MIDI keyboard: note drills, ear training, chords, falling-notes songs and a sound lab.">
+  <meta name="theme-color" content="#0f1115">
+  <meta name="robots" content="noindex">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="#/"><span class="logo">♪</span> Ivory</a>
+    <button id="midi-chip" class="chip">🔌 Connect piano</button>
+  </header>
+  <main id="view"></main>
+  <nav class="tabs" aria-label="Main">
+    <a href="#/" data-tab="learn"><span>🎯</span>Learn</a>
+    <a href="#/songs" data-tab="songs"><span>🎮</span>Songs</a>
+    <a href="#/lab" data-tab="lab"><span>🎛️</span>Sound</a>
+    <a href="#/create" data-tab="create"><span>✏️</span>Create</a>
+    <a href="#/settings" data-tab="settings"><span>⚙️</span>Settings</a>
+  </nav>
+  <noscript>This app needs JavaScript.</noscript>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
