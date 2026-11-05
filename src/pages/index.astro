@@ -3,14 +3,14 @@ import Layout from "../layouts/Layout.astro"
 
 const experience = [
   {
-    role: "Design leader",
+    role: "Strategic design lead",
     org: "frog",
     years: "2023 → now",
     description: "Leading projects in the strategy team. Previously head of public sector design, growing the team from 3 to 17 and launching four new products for clients.",
   },
   {
-    role: "Independent design lead",
-    org: "",
+    role: "Founder",
+    org: "Sherwin-Nicholls",
     years: "2018 → 2023",
     description: "Leading products, programmes and strategies with in-house teams for public and private sector clients.",
   },
@@ -18,7 +18,7 @@ const experience = [
     role: "Head of UX",
     org: "Decoded",
     years: "2015 → 2018",
-    description: "Leading the design of learning products for global clients including GE, TalkTalk, ING, Philips and Veon.",
+    description: "Leading the design of learning products for global clients including General Electric, TalkTalk, ING, Philips and Veon.",
   },
 ]
 
@@ -44,11 +44,6 @@ const jobs = [
     description: "Leading a team of seven to unpick the legal and cultural barriers to data sharing, and prototyping tools for compliance and a single customer view.",
   },
   {
-    label: "Proposition & content · frog",
-    role: "Creating a bootcamp to grow user-centred design capability",
-    description: "Writing the business case, operating model and 25 hours of content for a bootcamp that’s now part of a global training offer.",
-  },
-  {
     label: "AI knowledge capture · Cabinet Office",
     role: "Designing an AI-powered search engine for government",
     description: "Using machine learning to help the Cabinet Office make sense of the knowledge trapped in billions of documents across government.",
@@ -57,21 +52,6 @@ const jobs = [
     label: "Design lead · DfE",
     role: "Co-designing a service to help people retrain into new careers",
     description: "Leading design on the National Retraining Scheme, a multichannel service bringing careers guidance, online learning and job search together.",
-  },
-  {
-    label: "Transformation strategy · Ministry of Justice",
-    role: "Helping eight organisations move off a legacy system",
-    description: "Shaping the strategy, operating model and ways of working for eight organisations, with a roadmap to end their reliance on a legacy system.",
-  },
-  {
-    label: "Transformation strategy · DCMS",
-    role: "Building the foundations of digital transformation at DCMS",
-    description: "Creating service lines and a user-centred roadmap for change, and helping the department make better use of its data.",
-  },
-  {
-    label: "Design system & product strategy · Florence",
-    role: "Creating a strategy and design system for rapid development of health care services",
-    description: "Working with the CTO and product team to enable faster prototyping and more accessible digital services for health care professionals.",
   },
 ]
 
@@ -92,20 +72,31 @@ const links = [
     url: "https://dfedigital.blog.gov.uk/2018/12/20/designing-a-retraining-scheme-that-meets-user-needs/",
   },
   {
-    text: "Are you an easy hacking target? Cybersecurity tips for small business",
-    source: "The Guardian",
-    url: "https://www.theguardian.com/small-business-network/2017/sep/08/are-you-an-easy-hacking-target-cyber-security-tips-for-small-business",
-  },
-  {
-    text: "Education Secretary sets out vision for character and resilience",
-    source: "GOV.UK",
-    url: "https://www.gov.uk/government/news/education-secretary-sets-out-vision-for-character-and-resilience",
-  },
-  {
     text: "Hacksy, a cyber security coaching chatbot, in Product Hunt’s top 5",
     source: "Product Hunt",
     url: "https://www.producthunt.com/products/hacksy-by-decoded",
   },
+]
+
+const clients = [
+  "Cabinet Office",
+  "General Electric",
+  "DEFRA",
+  "ING",
+  "Department for Education",
+  "Philips",
+  "Ministry of Justice",
+  "VISA",
+  "NHS Education for Scotland",
+  "TalkTalk",
+  "DCMS",
+  "SP Energy Networks",
+  "HMRC",
+  "Fidelity",
+  "Planning Inspectorate",
+  "Veon",
+  "MHCLG",
+  "Florence",
 ]
 
 const pad = (n: number) => String(n).padStart(2, "0")
@@ -176,8 +167,15 @@ const nameLines = ["Phil", "Sherwin-", "Nicholls"].map((line) =>
         </ol>
       </section>
 
+      <section class="block" aria-labelledby="clients">
+        <h2 class="label" id="clients"><span aria-hidden="true">03 / </span>Clients</h2>
+        <ul class="clients">
+          {clients.map((client) => <li>{client}</li>)}
+        </ul>
+      </section>
+
       <section class="block" aria-labelledby="featured">
-        <h2 class="label" id="featured"><span aria-hidden="true">03 / </span>Featured in</h2>
+        <h2 class="label" id="featured"><span aria-hidden="true">04 / </span>Featured in</h2>
         <ol class="rows">
           {links.map((link, i) => (
             <li class="row">
@@ -469,6 +467,35 @@ const nameLines = ["Phil", "Sherwin-", "Nicholls"].map((line) =>
     .feature {
       transition: none;
     }
+  }
+
+  /* Clients: one run of names, alternating bold and hairline */
+
+  .clients {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: var(--display);
+    font-size: clamp(1.75rem, 1rem + 3.2vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    text-transform: uppercase;
+    text-wrap: pretty;
+  }
+
+  .clients li {
+    display: inline;
+    font-weight: 600;
+  }
+
+  .clients li:nth-child(even) {
+    font-weight: 200;
+  }
+
+  .clients li:not(:last-child)::after {
+    content: " / " / "";
+    font-weight: 200;
+    color: var(--muted);
   }
 
   /* Footer */
